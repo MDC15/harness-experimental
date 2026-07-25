@@ -92,6 +92,7 @@ grep -Fq 'read_source_text "scripts/agent-harness-block.md"' "$root/scripts/inst
 grep -Fq 'read_source_text "scripts/claude-harness-block.md"' "$root/scripts/install-harness.sh"
 grep -Fq 'REFRESH_AGENT_SHIM=1' "$root/scripts/install-harness.sh"
 grep -Fq 'CLI_PAYLOAD_MANIFEST="scripts/harness-cli-install-files.txt"' "$root/scripts/install-harness.sh"
+grep -Fq 'ENGINEERING_WISDOM_PAYLOAD_MANIFEST="scripts/engineering-wisdom-install-files.txt"' "$root/scripts/install-harness.sh"
 ! grep -Fq "cat <<'EOF'" <(sed -n '/agent_shim_block()/,/^}/p' "$root/scripts/install-harness.sh")
 
 # PowerShell is asserted statically on hosts without pwsh. Runtime coverage is
@@ -99,6 +100,7 @@ grep -Fq 'CLI_PAYLOAD_MANIFEST="scripts/harness-cli-install-files.txt"' "$root/s
 grep -Fq 'Read-SourceText "scripts/agent-harness-block.md"' "$root/scripts/install-harness.ps1"
 grep -Fq '$RefreshAgentShim = $true' "$root/scripts/install-harness.ps1"
 grep -Fq '$script:CliPayloadManifest = "scripts/harness-cli-install-files.txt"' "$root/scripts/install-harness.ps1"
+grep -Fq '$script:EngineeringWisdomPayloadManifest = "scripts/engineering-wisdom-install-files.txt"' "$root/scripts/install-harness.ps1"
 grep -Fq 'Assert-HarnessMarkers $content "AGENTS.md"' "$root/scripts/install-harness.ps1"
 ! grep -Fq '<!-- HARNESS:BEGIN -->' <(sed -n '/function Get-AgentShimBlock/,/^}/p' "$root/scripts/install-harness.ps1")
 

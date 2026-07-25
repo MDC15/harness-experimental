@@ -4,11 +4,13 @@ set -euo pipefail
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 core_manifest="$root/scripts/harness-install-files.txt"
 cli_manifest="$root/scripts/harness-cli-install-files.txt"
+wisdom_manifest="$root/scripts/engineering-wisdom-install-files.txt"
 temp=$(mktemp -d)
 trap 'rm -rf "$temp"' EXIT
 assets="$temp/assets"
 core="$temp/core"
 full="$temp/full"
+wisdom="$temp/wisdom"
 platform=fixture-platform
 mkdir -p "$assets"
 
@@ -16,10 +18,12 @@ mkdir -p "$assets"
 # and is checked against the core declaration below.
 [[ "$(grep -Fc 'PAYLOAD_MANIFEST="scripts/harness-install-files.txt"' "$root/scripts/install-harness.sh")" == 1 ]]
 [[ "$(grep -Fc 'CLI_PAYLOAD_MANIFEST="scripts/harness-cli-install-files.txt"' "$root/scripts/install-harness.sh")" == 1 ]]
+[[ "$(grep -Fc 'ENGINEERING_WISDOM_PAYLOAD_MANIFEST="scripts/engineering-wisdom-install-files.txt"' "$root/scripts/install-harness.sh")" == 1 ]]
 [[ "$(grep -Fc '$script:PayloadManifest = "scripts/harness-install-files.txt"' "$root/scripts/install-harness.ps1")" == 1 ]]
 [[ "$(grep -Fc '$script:CliPayloadManifest = "scripts/harness-cli-install-files.txt"' "$root/scripts/install-harness.ps1")" == 1 ]]
+[[ "$(grep -Fc '$script:EngineeringWisdomPayloadManifest = "scripts/engineering-wisdom-install-files.txt"' "$root/scripts/install-harness.ps1")" == 1 ]]
 
-python3 - "$root" "$core_manifest" "$cli_manifest" <<'PY'
+python3 - "$root" "$core_manifest" "$cli_manifest" "$wisdom_manifest" <<'PY'
 import pathlib, sys
 root = pathlib.Path(sys.argv[1])
 seen = set()
@@ -51,9 +55,17 @@ HARNESS_CLI_BASE_URL="file://$assets" \
 HARNESS_CLI_PLATFORM="$platform" \
   "$root/scripts/install-harness.sh" --directory "$full" --with-cli --yes >/dev/null
 
-python3 - "$core" "$full" "$core_manifest" "$cli_manifest" "$root/scripts/schema" <<'PY'
+HARNESS_CLI_BASE_URL="file://$temp/absent" \
+HARNESS_CLI_PLATFORM="$platform" \
+  "$root/scripts/install-harness.sh" --directory "$wisdom" \
+    --with-engineering-wisdom --yes >/dev/null
+
+python3 - "$core" "$full" "$wisdom" "$core_manifest" "$cli_manifest" \
+  "$wisdom_manifest" "$root/scripts/schema" <<'PY'
 import pathlib, re, sys
-core, full, core_manifest, cli_manifest, schema_root = map(pathlib.Path, sys.argv[1:])
+core, full, wisdom, core_manifest, cli_manifest, wisdom_manifest, schema_root = map(
+    pathlib.Path, sys.argv[1:]
+)
 
 def entries(path):
     return {
@@ -95,8 +107,20 @@ if full_actual != full_required:
         f"extra={sorted(full_actual-full_required)}"
     )
 
+wisdom_required = core_expected | core_runtime | entries(wisdom_manifest)
+wisdom_actual = {
+    str(path.relative_to(wisdom))
+    for path in wisdom.rglob("*")
+    if path.is_file()
+}
+if wisdom_actual != wisdom_required:
+    raise SystemExit(
+        f"wisdom payload mismatch: missing={sorted(wisdom_required-wisdom_actual)} "
+        f"extra={sorted(wisdom_actual-wisdom_required)}"
+    )
+
 pattern = re.compile(r"!?\[[^]]*\]\(([^)]+)\)")
-for install_root in (core, full):
+for install_root in (core, full, wisdom):
     errors = []
     for document in install_root.rglob("*.md"):
         for target in pattern.findall(document.read_text(errors="replace")):
@@ -116,4 +140,4 @@ for install_root in (core, full):
         raise SystemExit("\n".join(errors))
 PY
 
-echo "core and CLI manifests, exact payloads, and installed links passed"
+echo "core, CLI, and engineering-wisdom manifests, exact payloads, and installed links passed"

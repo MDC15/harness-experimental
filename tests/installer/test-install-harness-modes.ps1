@@ -51,11 +51,20 @@ try {
     if (!(Get-Content -Raw (Join-Path $Fresh ".agents/skills/onboard-repository/agents/openai.yaml")).Contains("allow_implicit_invocation: false")) { throw "onboarding skill is not explicit-only" }
     if (!(Get-Content -Raw (Join-Path $Fresh ".agents/skills/audit-onboarding-proposal/agents/openai.yaml")).Contains("allow_implicit_invocation: false")) { throw "onboarding audit skill is not explicit-only" }
     if (!(Get-Content -Raw (Join-Path $Fresh ".agents/skills/improve-harness/agents/openai.yaml")).Contains("allow_implicit_invocation: false")) { throw "Harness-improvement skill is not explicit-only" }
+    if (Test-Path (Join-Path $Fresh ".agents/skills/engineering-wisdom")) { throw "default core installed engineering wisdom" }
     if (!(Get-Content -Raw (Join-Path $Fresh "AGENTS.md")).Contains("No control-plane operation is required.")) { throw "fresh default still requires control-plane commands" }
     if ((Get-Content -Raw (Join-Path $Fresh "AGENTS.md")).Contains("Current Upstream Goal")) { throw "fresh default contains upstream repository goal" }
 
+    $Wisdom = Join-Path $Temp "wisdom"
+    Invoke-Install $Wisdom @("WithEngineeringWisdom")
+    if (!(Test-Path (Join-Path $Wisdom ".agents/skills/engineering-wisdom/SKILL.md"))) { throw "explicit engineering wisdom skill missing" }
+    if (!(Test-Path (Join-Path $Wisdom ".agents/skills/engineering-wisdom/references/heuristics.md"))) { throw "engineering wisdom heuristics missing" }
+    if (!(Test-Path (Join-Path $Wisdom ".agents/skills/engineering-wisdom/references/sources.md"))) { throw "engineering wisdom sources missing" }
+    if (!(Get-Content -Raw (Join-Path $Wisdom ".agents/skills/engineering-wisdom/agents/openai.yaml")).Contains("allow_implicit_invocation: false")) { throw "engineering wisdom is not explicit-only" }
+
     $Full = Join-Path $Temp "full"
     Invoke-Install $Full @("WithCli")
+    if (Test-Path (Join-Path $Full ".agents/skills/engineering-wisdom")) { throw "CLI profile implicitly installed engineering wisdom" }
     if (!(Test-Path (Join-Path $Full "scripts/bin/harness-cli.exe"))) { throw "explicit CLI missing" }
     if (!(Test-Path (Join-Path $Full "scripts/bootstrap-harness.ps1"))) { throw "CLI bootstrap missing" }
     if (!(Test-Path (Join-Path $Full "docs/contracts/harness-orchestration-v1.md"))) { throw "CLI protocol contract missing" }

@@ -120,6 +120,54 @@ The first pass is read-only and returns evidence-backed proposals. Exact user
 approval is required before a later pass may apply selected repository
 guidance.
 
+## Optional Engineering Wisdom
+
+The neutral default does not install engineering philosophy. To add the
+explicit-only `engineering-wisdom` advisory pack to a fresh project:
+
+```bash
+scripts/install-harness.sh --with-engineering-wisdom --yes /path/to/project
+```
+
+```powershell
+./scripts/install-harness.ps1 -WithEngineeringWisdom -Yes -Directory C:\path\to\project
+```
+
+For a project that already has Harness, add `--merge` / `-Merge`. This preserves
+existing files and fills only the missing pack files:
+
+```bash
+scripts/install-harness.sh --merge --with-engineering-wisdom --yes /path/to/project
+```
+
+Installation does not run or activate the skill. Invoke it explicitly:
+
+```text
+$engineering-wisdom review this payment change
+```
+
+Its review separates repository observations, contextual heuristics,
+counter-pressure, proposed repository-owned enforcement, and verification.
+Advice cannot silently become policy or trigger an architecture rewrite.
+Repository intent and tests remain authoritative.
+
+Without the opt-in flag, a fresh or normal installation does not copy the
+pack. Re-running the installer without the flag also leaves an already
+installed pack untouched; omission is non-activation, not removal. To remove
+the stateless pack, delete only `.agents/skills/engineering-wisdom/`:
+
+```bash
+rm -r .agents/skills/engineering-wisdom
+```
+
+```powershell
+Remove-Item -Recurse .agents/skills/engineering-wisdom
+```
+
+The concise bibliography acknowledges Robert C. Martin's broader body of work,
+including code, design, testing, refactoring, architecture, and professional
+practice. Its ideas are paraphrased and presented as fallible heuristics.
+
 After installation, preview and apply future core upgrades with:
 
 ```bash

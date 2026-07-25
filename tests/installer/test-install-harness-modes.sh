@@ -69,6 +69,7 @@ grep -Fq 'allow_implicit_invocation: false' \
   "$fresh/.agents/skills/audit-onboarding-proposal/agents/openai.yaml"
 grep -Fq 'allow_implicit_invocation: false' \
   "$fresh/.agents/skills/improve-harness/agents/openai.yaml"
+[[ ! -e "$fresh/.agents/skills/engineering-wisdom" ]]
 grep -Fq 'No control-plane operation is required.' "$fresh/AGENTS.md"
 ! grep -Fq 'Current Upstream Goal' "$fresh/AGENTS.md"
 ! grep -Fq 'query matrix --active --summary' "$fresh/AGENTS.md"
@@ -76,11 +77,24 @@ for core_file in $(sed -e '/^\s*#/d' -e '/^\s*$/d' "$root/scripts/harness-instal
   [[ -f "$fresh/$core_file" ]]
 done
 
+# Explicit wisdom selection adds only the advisory skill and leaves it
+# explicit-only.
+wisdom="$temp/wisdom"
+install --directory "$wisdom" --with-engineering-wisdom --yes \
+  >"$temp/wisdom.out"
+grep -Fq 'Engineering wisdom: included (explicit opt-in)' "$temp/wisdom.out"
+[[ -f "$wisdom/.agents/skills/engineering-wisdom/SKILL.md" ]]
+[[ -f "$wisdom/.agents/skills/engineering-wisdom/references/heuristics.md" ]]
+[[ -f "$wisdom/.agents/skills/engineering-wisdom/references/sources.md" ]]
+grep -Fq 'allow_implicit_invocation: false' \
+  "$wisdom/.agents/skills/engineering-wisdom/agents/openai.yaml"
+
 # Explicit CLI selection adds the complete compatibility bundle, migrations,
 # ignore rules, and verified binary without initializing a database.
 full="$temp/full"
 install --directory "$full" --with-cli --yes >"$temp/full.out"
 grep -Fq 'Harness profile: core+cli' "$temp/full.out"
+[[ ! -e "$full/.agents/skills/engineering-wisdom" ]]
 [[ -x "$full/scripts/bin/harness-cli" ]]
 [[ -x "$full/scripts/bootstrap-harness.sh" ]]
 [[ -f "$full/scripts/bootstrap-harness.ps1" ]]

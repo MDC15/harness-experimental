@@ -1,6 +1,7 @@
 # Installation Profiles
 
-The installers expose two product profiles and no arbitrary feature matrix.
+The installers expose two product profiles plus one independent,
+explicit-only advisory add-on. The default remains philosophy-neutral.
 
 ## Core
 
@@ -44,6 +45,10 @@ Core performs no compatibility-CLI download, schema discovery, database
 bootstrap installation, or database-specific `.gitignore` write. A core update
 does not remove an existing `harness-cli` or database.
 
+Core also excludes `.agents/skills/engineering-wisdom/`. The optional
+engineering manifest is separate from `scripts/harness-install-files.txt`, so
+normal install and update behavior cannot silently add that advice.
+
 ## Core Plus CLI
 
 `--with-cli` in Bash or `-WithCli` in PowerShell adds the optional
@@ -55,6 +60,40 @@ binary. `--upgrade-cli` / `-UpgradeCli` implies this profile.
 The compatibility inputs and binary are staged before compatibility target
 files change. A staging, download, checksum, or apply failure restores the
 previous compatibility files. Core files already installed remain usable.
+
+## Engineering Wisdom Add-on
+
+`--with-engineering-wisdom` in Bash or `-WithEngineeringWisdom` in PowerShell
+copies the files declared in
+`scripts/engineering-wisdom-install-files.txt`. This selection is independent
+of the core/CLI profile, so either profile may include the add-on.
+
+Concrete behavior:
+
+1. No flag: the installer does not read the optional manifest or copy the
+   skill.
+2. Opt-in flag: the installer copies the `engineering-wisdom` skill and its
+   explicit-only metadata.
+3. Installed skill: nothing runs until the consumer invokes
+   `$engineering-wisdom`.
+4. Later install without the flag: an existing copy is left untouched. Absence
+   of the flag means non-activation, not uninstall.
+5. Removal: delete `.agents/skills/engineering-wisdom/`. The add-on stores no
+   database or other lifecycle state.
+
+The skill reviews repository evidence using advice inspired by Robert C.
+Martin's work across clean code, SOLID and design, testing, refactoring, clean
+architecture, and professional practice. Each finding must separate:
+
+- observation;
+- applicable heuristic;
+- counter-pressure or trade-off;
+- any proposed repository-owned enforcement; and
+- verification that could support or falsify the advice.
+
+Installing or invoking the skill does not authorize application architecture
+rewrites, lint rules, coverage targets, dependency rules, or other policy.
+Those require consumer-repository authority and normal validation.
 
 ## Core Update Contract
 

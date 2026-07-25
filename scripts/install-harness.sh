@@ -13,6 +13,9 @@ Options:
       --with-cli         Add the optional CLI compatibility bundle: lifecycle
                          docs, bootstrap scripts, schemas, ignore rules, and a
                          checksum-verified platform binary.
+      --with-engineering-wisdom
+                         Add the explicit-only engineering-wisdom advisory
+                         skill. It is excluded from the default core.
       --merge            On protected-path conflict, keep existing files in
                          place and install only missing Harness files.
       --upgrade-cli      Add the CLI bundle, replace the installed CLI after
@@ -52,6 +55,7 @@ Examples:
   scripts/install-harness.sh
   scripts/install-harness.sh --directory /path/to/project --yes
   scripts/install-harness.sh --directory /path/to/project --with-cli --yes
+  scripts/install-harness.sh --directory /path/to/project --with-engineering-wisdom --yes
   scripts/install-harness.sh ./my-project --force
   curl -fsSL https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.sh | bash -s -- --yes
   curl -fsSL https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.sh | bash -s -- --merge --yes
@@ -1090,11 +1094,17 @@ override_protected_target_paths() {
   fi
 }
 
+install_engineering_wisdom() {
+  [ "$INSTALL_ENGINEERING_WISDOM" -eq 1 ] || return 0
+  copy_manifest_files "$ENGINEERING_WISDOM_PAYLOAD_MANIFEST"
+}
+
 TARGET_INPUT="${HARNESS_TARGET_DIR:-$PWD}"
 YES=0
 FORCE=0
 DRY_RUN=0
 INSTALL_RUST_CLI=0
+INSTALL_ENGINEERING_WISDOM=0
 REFRESH_AGENT_SHIM=0
 INSTALL_CLAUDE_SHIM=0
 UPGRADE_CLI=0
@@ -1115,6 +1125,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --with-cli)
       INSTALL_RUST_CLI=1
+      shift
+      ;;
+    --with-engineering-wisdom)
+      INSTALL_ENGINEERING_WISDOM=1
       shift
       ;;
     --force)
@@ -1195,6 +1209,7 @@ CORE_SOURCE_BASE_URL="${HARNESS_CORE_SOURCE_BASE_URL:-https://raw.githubusercont
 CORE_SOURCE_BASE_URL="${CORE_SOURCE_BASE_URL%/}"
 PAYLOAD_MANIFEST="scripts/harness-install-files.txt"
 CLI_PAYLOAD_MANIFEST="scripts/harness-cli-install-files.txt"
+ENGINEERING_WISDOM_PAYLOAD_MANIFEST="scripts/engineering-wisdom-install-files.txt"
 SCHEMA_DIR="scripts/schema"
 CLI_BASE_URL="${HARNESS_CLI_BASE_URL:-}"
 CLI_BASE_URL="${CLI_BASE_URL%/}"
@@ -1278,10 +1293,16 @@ if [ "$INSTALL_RUST_CLI" -eq 1 ]; then
 else
   log "Harness CLI source: skipped"
 fi
+if [ "$INSTALL_ENGINEERING_WISDOM" -eq 1 ]; then
+  log "Engineering wisdom: included (explicit opt-in)"
+else
+  log "Engineering wisdom: excluded"
+fi
 log "Target project: $TARGET_DIR"
 
 install_harness_core
 
+install_engineering_wisdom
 refresh_agent_shim
 write_claude_shim
 install_cli_bundle

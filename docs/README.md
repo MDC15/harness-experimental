@@ -29,6 +29,19 @@ commands, or require the optional SQLite control-plane lifecycle. The installed
 automatically; invoke `$onboard-repository` for requested onboarding and
 `$improve-harness` for an explicitly authorized Harness improvement.
 
+## Optional Advisory Add-on
+
+- `.agents/skills/engineering-wisdom/`: source for an optional, explicit-only
+  review skill covering code clarity, design, testing, refactoring,
+  architecture, and professional practice.
+- `product/installation-profiles.md`: exact activation, invocation,
+  non-activation, and removal behavior.
+
+The add-on is absent from the default core manifest. Even after explicit
+installation it runs only through `$engineering-wisdom`, advises before any
+change, and cannot establish consumer policy without repository-owned
+authority.
+
 ## Consumer-Owned Truth
 
 The consumer repository's own README, architecture, code, tests, CI, runtime
