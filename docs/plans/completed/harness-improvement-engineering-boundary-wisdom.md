@@ -86,32 +86,39 @@ its context cost exceeds its review value.
 
 ## Fresh Rerun
 
-A fresh Codex session received only the updated skill path, pinned repository,
-and a read-only request to assess whether tests and automation prove behavior
-across JVM and browser hosts.
+The accepted independent rerun is the tracked Herdr task
+`repository-harness/review-engineering-wisdom`, reviewing candidate
+`54095833cfeb5d3809f23880e12f290c3dce94b0`. Its review artifact is
+`/Users/tubakhuym/projects/khuym/.herdr-runtime/repository-harness/review-engineering-wisdom/review-engineering-wisdom.review.md`.
+The reviewer did not receive the source audit.
 
-- **Available:** yes, at the supplied optional skill path.
-- **Retrieved/invoked:** yes; the response used the skill's exact five-part
-  finding shape.
-- **Relevant:** yes; it independently identified false-green browser artifact
-  QA, duplicate composition-root startup, persistence tests bypassing host
-  adapters, real-input QA bypass, and wall-clock/fixed-frame semantic drift.
-- **Proof quality:** it cited concrete paths and proposed clean-build artifact
-  loading, exactly-one-canvas startup, real persistence reloads, host input, and
-  delayed-frame cross-adapter checks.
-- **Human intervention/retries:** none.
-- **Authority behavior:** it kept the review read-only, proposed no enforcement,
-  and disclosed that runtime launch remained unperformed.
-- **Maintenance cost:** 6 lines in the main workflow and 84 lines in the
-  progressively loaded catalog, plus focused installed-payload assertions.
+The review exercised the updated guidance and independently found six material
+risks:
+
+1. duplicate composition-root invocation and no real artifact startup check;
+2. false-green browser build and QA automation;
+3. wall-clock versus fixed-frame adapter timing drift;
+4. malformed or wrong-typed persisted input preventing startup;
+5. host-labeled proof that bypasses real browser/JVM boundaries; and
+6. cumulative sound-event state that production hosts never bound.
+
+For each risk, the reviewer separated observation, heuristic, trade-off,
+repository-owned enforcement proposal, and verification. It cited concrete
+repository paths and kept product choices with the consumer repository.
+
+Runtime proof remained unavailable because `bb`, `clojure`,
+`gherkin-parser`, and `node_modules` were absent. Consequently, native tests,
+a clean browser build/page load, canvas counting, JVM launch, and real
+persistence corruption checks were not run. No native-subagent result is used
+as evidence for this decision.
 
 ## Decision
 
 Keep.
 
-The rerun exercised the intervention and improved the bounded review from
-shared-core/source evidence to claim-matched host-boundary proof without
-promoting advice into repository policy.
+The accepted tracked Herdr review exercised the intervention and improved the
+bounded review from shared-core/source evidence to claim-matched host-boundary
+proof without promoting advice into repository policy.
 
 ## Result
 
