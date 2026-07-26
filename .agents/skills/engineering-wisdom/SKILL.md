@@ -21,6 +21,9 @@ Repository intent, code, tests, and observed behavior remain authoritative.
    heuristics that match observed evidence. Read
    [references/sources.md](references/sources.md) when attribution or the
    intellectual basis matters.
+5. When the request crosses a host boundary, inspect the composition root,
+   external input, adapter semantics, shipped artifact, and cumulative state
+   that are relevant. Do not assume isolated core tests prove those boundaries.
 
 ## Review From Evidence
 
@@ -36,7 +39,9 @@ For each material finding, keep these fields separate:
   possible mechanism, and removal condition. Never describe advice as an
   existing rule unless repository evidence already establishes it.
 - **Verification:** A focused observation or executable check that could
-  confirm or falsify the recommendation.
+  confirm or falsify the recommendation. Match proof to the claim: test pure
+  policy in isolation, startup at the composition root, and delivery through
+  the artifact users actually load.
 
 Rank findings by user impact and change risk. Prefer one concrete example over
 several abstract claims.

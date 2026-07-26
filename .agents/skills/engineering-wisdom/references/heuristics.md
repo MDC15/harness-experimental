@@ -1,7 +1,8 @@
 # Engineering Heuristic Catalog
 
 Use a heuristic only when repository evidence makes its expected benefit
-plausible. Each entry includes counter-pressure and a way to test the advice.
+plausible. These are candidate explanations, not policy inferred from one
+repository. Each entry includes counter-pressure and a way to test the advice.
 
 ## Code Clarity
 
@@ -85,6 +86,89 @@ plausible. Each entry includes counter-pressure and a way to test the advice.
   provider sandbox contract test.
 - Verify by comparing the double with the real boundary and by refactoring
   internal calls without changing behavior.
+
+### Exercise composition roots and shipped artifacts
+
+- Helps when isolated units pass but startup wiring, lifecycle hooks, generated
+  output, or host configuration determines delivered behavior.
+- Can hurt when every unit change triggers a slow end-to-end suite; keep a
+  small smoke path for each material composition root and artifact.
+- Example: a framework auto-starts `run`, then page code calls `run` again, so
+  one page creates two canvases. Invoke one composition root exactly once and
+  verify one root instance. Likewise, make a browser build fail on a missing
+  bundle and smoke-test the actual generated file rather than source or a stale
+  artifact.
+- Verify by starting through the production entrypoint, counting created roots
+  or registered handlers, forcing a build error, and loading the cleanly built
+  artifact in its real host.
+
+### Make automation failure honest
+
+- Helps when a build, test, or QA wrapper catches a failure, prints a warning,
+  and still exits successfully.
+- Can hurt when an unavailable optional check is intentionally non-blocking;
+  label that result `skipped` or `degraded` instead of silently redefining it as
+  success.
+- Example: if compilation fails but browser QA accepts generic tool output, an
+  old bundle can produce a false green. Propagate the failing exit status and
+  require evidence from the artifact produced by that run.
+- Verify by injecting a compile or launch error: the owning check must fail, and
+  removing a generated artifact must not leave the workflow green.
+
+## Boundary Data And Adapter Semantics
+
+### Decode, validate, and recover at input boundaries
+
+- Helps when persisted settings, files, environment values, or messages can be
+  malformed, stale, wrong-typed, or hostile before entering trusted state.
+- Can hurt when permissive fallback hides corruption or a required migration;
+  choose reject, default, quarantine, or repair using repository-owned policy.
+- Example: syntax-valid persisted data contains a string where startup expects
+  an integer. Parse with a non-evaluating decoder, validate the schema and
+  ranges, then use the repository-approved fallback so one bad record does not
+  crash every launch.
+- Verify with malformed syntax, valid-but-wrong types, unknown fields, dangerous
+  reader forms, and migration fixtures; observe the chosen fallback and ensure
+  no input is executed.
+
+### Pass external values as data
+
+- Helps when caller-controlled values cross an interpreter boundary such as a
+  shell, query language, template, or reflective reader.
+- Can hurt when replacing a tiny, fixed command with a complex abstraction
+  obscures its behavior; first establish whether the value is actually
+  controllable.
+- Example: pass a caller path as a process argument instead of concatenating it
+  into shell source, because quoting a value inside a command string can still
+  allow another round of expansion.
+- Verify with spaces, quotes, substitution markers, option-like prefixes, and
+  platform-specific separators; the callee must receive the exact value.
+
+### Preserve semantics across adapters
+
+- Helps when multiple hosts implement one core contract but differ in clocks,
+  resize lifecycle, retries, ordering, or error behavior.
+- Can hurt when the adapters intentionally expose different product semantics;
+  document that distinction instead of forcing accidental parity.
+- Example: adding `1/60` per callback makes a real-time simulation run at half
+  speed when callbacks arrive at 30 Hz. If the product means wall-clock time,
+  measure elapsed time and apply its documented cap or substeps; use fixed
+  ticks only when deterministic frame-count semantics are intended.
+- Verify the same contract through each adapter under delayed frames, pauses,
+  resize, and errors; compare observable outcomes rather than internal calls.
+
+### Bound cumulative state at its consumption boundary
+
+- Helps when logs, events, retries, caches, or histories grow for the lifetime
+  of a process although consumers only need new or recent entries.
+- Can hurt when full history is an explicit audit requirement; then retention,
+  storage, and backpressure need repository-owned limits instead of truncation.
+- Example: after a host plays sound events, drain acknowledged entries, advance
+  a consumer cursor, or retain a bounded window. Otherwise each effect remains
+  reachable and long sessions consume steadily more memory.
+- Verify with a long-run test that produces and consumes many events, checks
+  each event is handled as required, and asserts retained state reaches a
+  stable bound.
 
 ## Refactoring
 

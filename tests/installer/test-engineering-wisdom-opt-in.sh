@@ -46,6 +46,16 @@ grep -Fq '**Proposed repository-owned enforcement:**' \
   "$opt_in_target/.agents/skills/engineering-wisdom/SKILL.md"
 grep -Fq 'Do not rewrite application architecture' \
   "$opt_in_target/.agents/skills/engineering-wisdom/SKILL.md"
+grep -Fq 'Exercise composition roots and shipped artifacts' \
+  "$opt_in_target/.agents/skills/engineering-wisdom/references/heuristics.md"
+grep -Fq 'Decode, validate, and recover at input boundaries' \
+  "$opt_in_target/.agents/skills/engineering-wisdom/references/heuristics.md"
+grep -Fq 'Preserve semantics across adapters' \
+  "$opt_in_target/.agents/skills/engineering-wisdom/references/heuristics.md"
+grep -Fq 'Make automation failure honest' \
+  "$opt_in_target/.agents/skills/engineering-wisdom/references/heuristics.md"
+grep -Fq 'Bound cumulative state at its consumption boundary' \
+  "$opt_in_target/.agents/skills/engineering-wisdom/references/heuristics.md"
 
 # A later normal merge is non-activation, not removal.
 before=$(shasum -a 256 \
