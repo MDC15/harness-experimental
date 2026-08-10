@@ -1,5 +1,5 @@
 # Default Harness core payload embedded in the Rust `harness` binary.
-# Keep this profile generic, repository-centered, and free of SQLite files.
+# Keep this profile generic, repository-centered, and free of hidden task state.
 .agents/skills/audit-onboarding-proposal/SKILL.md
 .agents/skills/audit-onboarding-proposal/agents/openai.yaml
 .agents/skills/audit-onboarding-proposal/scripts/validate_evidence_capsule.py

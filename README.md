@@ -2,304 +2,178 @@
 
 Turn a software repository into a legible, agent-ready workspace.
 
-`repository-harness` gives coding agents a small entrypoint, structured
-repository knowledge, durable execution plans when work truly needs them, and
-mechanical validation. The repository—not a hidden workflow database—is the
-default system of record.
+`repository-harness` installs a small repository protocol and a safe updater.
+The repository remains the system of record: product documents, decisions,
+plans, code, tests, CI, and runtime evidence define the work.
 
-The app is what users touch. The harness is what makes the app and its rules
-easy for agents and humans to understand.
+It is not a task database, story tracker, agent orchestrator, or application
+runtime.
 
-## Why This Exists
+## What It Solves
 
-Coding agents commonly fail for ordinary engineering reasons:
+Coding agents often fail for ordinary engineering reasons:
 
-- important constraints live only in chat or in someone's head;
-- the repository does not say which documents are authoritative;
-- small changes are wrapped in process that obscures the actual work;
-- large changes lose decisions and progress between sessions;
-- validation is vague, late, or disconnected from user-visible behavior.
+- important intent exists only in chat;
+- the repository does not identify authoritative documents;
+- small changes acquire unnecessary process;
+- long changes lose decisions and recovery context;
+- completion is claimed without behavior-level proof; and
+- an agent invents product policy when the request leaves a material choice
+  open.
 
-The answer is not a longer mandatory workflow. It is a repository that exposes
-the right context at the right time and enforces important invariants with
-tests and scripts.
+Harness provides a compact entrypoint, a navigable repository map, durable plans
+only when work needs them, explicit judgment boundaries, and mechanical
+validation.
 
-This direction is anchored in OpenAI's
-[Harness engineering](https://openai.com/index/harness-engineering/) account:
-keep the agent entrypoint small, make repository knowledge navigable, store
-complex execution plans durably, make application behavior directly
-inspectable, and enforce architectural rules mechanically.
-
-## The Default Workflow
-
-Start with [`AGENTS.md`](AGENTS.md), then follow the map in
-[`docs/WORKFLOW.md`](docs/WORKFLOW.md). The size of the request determines the
-amount of durable process:
+## Default Workflow
 
 ```text
-read-only question
+read-only request
   -> inspect the smallest authoritative surface
   -> answer with evidence
 
 bounded change
-  -> inspect locally
-  -> change code or docs
+  -> inspect authority and affected behavior
+  -> implement the smallest coherent change
   -> run relevant proof
-  -> report the result
 
-multi-session or coordination-heavy change
+multi-session or coordinated change
   -> create docs/plans/active/<plan>.md
-  -> record progress, decisions, and validation in Git
-  -> move the finished plan to docs/plans/completed/
+  -> keep decisions, progress, recovery, and validation current
+  -> move the validated plan to docs/plans/completed/
 
-consequential ambiguity
-  -> pause before mutation
-  -> present the concrete choice and its effects
-  -> continue after authority is clear
+material product ambiguity
+  -> stop before mutation
+  -> present the concrete choice and consequences
 ```
 
-A typo fix does not need intake, a story row, or a trace. A migration spanning
-several sessions does need a durable plan. A request to “simplify permissions”
-without saying whether existing access may be revoked needs human judgment
-before code changes. These are independent decisions, not risk levels on one
-process ladder.
+A typo does not need a plan. A migration spanning sessions does. A request to
+“add rate limiting” without a quota, identity key, enforcement owner, shared
+state topology, or response contract must stop before implementation.
 
-## Repository Knowledge
+Start with [`AGENTS.md`](AGENTS.md), then
+[`docs/WORKFLOW.md`](docs/WORKFLOW.md).
 
-- [`AGENTS.md`](AGENTS.md) — compact, stable entrypoint for agents.
-- [`docs/WORKFLOW.md`](docs/WORKFLOW.md) — canonical request and execution flow.
-- [`docs/HARNESS.md`](docs/HARNESS.md) — design principles and system model.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — boundaries and dependency
-  direction.
-- [`docs/product/`](docs/product/) — current product behavior and constraints.
-- [`docs/plans/`](docs/plans/) — active and completed durable execution plans.
-- [`docs/decisions/`](docs/decisions/) — durable architectural decisions.
-- [`docs/templates/exec-plan.md`](docs/templates/exec-plan.md) — plan template.
-- [`docs/README.md`](docs/README.md) — complete documentation map, including
-  optional compatibility surfaces.
-- [`tests/README.md`](tests/README.md) — behavior ownership, validation entry
-  points, and removal boundaries for test suites.
+## What Gets Installed
 
-The default path requires no local database. Product documents, code, tests,
-plans, decisions, and Git history form one inspectable source of truth.
+The default core contains:
 
-## Install Harness Into A Project
+- a compact `AGENTS.md` entrypoint;
+- the repository workflow and documentation map;
+- product, decision, and execution-plan structure;
+- optional templates for durable plans, decisions, application runbooks, and
+  evidence-backed Harness improvements; and
+- explicit-only onboarding and proposal-audit skills.
 
-From a target project directory, run:
+It does not install application architecture, product policy, validation
+commands, credentials, a database, schemas, orchestration, or background
+processes.
+
+The exact payload is declared in
+[`scripts/harness-install-files.txt`](scripts/harness-install-files.txt).
+
+## Install
+
+From a target repository:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.sh?$(date +%s)" | bash -s -- --yes
+curl -fsSL "https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.sh?$(date +%s)" |
+  bash -s -- --yes
 ```
 
-On Windows PowerShell:
+On PowerShell:
 
 ```powershell
 & ([scriptblock]::Create((irm "https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.ps1"))) -Yes
 ```
 
-Use `--merge` / `-Merge` to add missing Harness files without replacing
-existing project files. Use `--override` / `-Override` only when replacement is
-intentional. Use `--dry-run` / `-DryRun` to preview writes.
+Use `--merge` / `-Merge` to preserve existing files and add only missing
+Harness paths. Use `--override` / `-Override` only when replacement is
+intentional. Use `--dry-run` / `-DryRun` to preview.
 
-The default installation downloads a checksum-verified Rust binary named
-`harness`, then uses it to install the small repository-centered core. It does
-not install the optional SQLite compatibility CLI, discover schemas, install
-database bootstrap scripts, or add database ignore rules. It also does not copy
-this upstream repository's README or architecture over consumer-owned truth.
-The core includes the explicit-only `$onboard-repository` and
-`$audit-onboarding-proposal` skills. They never run during installation or
-ordinary tasks.
+The bootstrap downloads a versioned `harness` binary and checksum, verifies
+release identity, and delegates installation to that candidate.
 
-To map a brownfield repository after installation, ask the agent to run:
-
-```text
-$onboard-repository
-```
-
-The first pass is read-only and returns evidence-backed proposals. Exact user
-approval is required before a later pass may apply selected repository
-guidance.
-
-## Optional Engineering Wisdom
-
-The neutral default does not install engineering philosophy. To add the
-explicit-only `engineering-wisdom` advisory pack to a fresh project:
+## Maintain An Installation
 
 ```bash
-scripts/install-harness.sh --with-engineering-wisdom --yes /path/to/project
-```
-
-```powershell
-./scripts/install-harness.ps1 -WithEngineeringWisdom -Yes -Directory C:\path\to\project
-```
-
-For a project that already has Harness, add `--merge` / `-Merge`. This preserves
-existing files and fills only the missing pack files:
-
-```bash
-scripts/install-harness.sh --merge --with-engineering-wisdom --yes /path/to/project
-```
-
-Installation does not run or activate the skill. Invoke it explicitly:
-
-```text
-$engineering-wisdom review this payment change
-```
-
-Its review separates repository observations, contextual heuristics,
-counter-pressure, proposed repository-owned enforcement, and verification.
-Advice cannot silently become policy or trigger an architecture rewrite.
-Repository intent and tests remain authoritative.
-
-Without the opt-in flag, a fresh or normal installation does not copy the
-pack. Re-running the installer without the flag also leaves an already
-installed pack untouched; omission is non-activation, not removal. To remove
-the stateless pack, delete only `.agents/skills/engineering-wisdom/`:
-
-```bash
-rm -r .agents/skills/engineering-wisdom
-```
-
-```powershell
-Remove-Item -Recurse .agents/skills/engineering-wisdom
-```
-
-The concise bibliography acknowledges Robert C. Martin's broader body of work,
-including code, design, testing, refactoring, architecture, and professional
-practice. Its ideas are paraphrased and presented as fallible heuristics.
-
-After installation, preview and apply future core upgrades with:
-
-```bash
-scripts/bin/harness update --dry-run
-scripts/bin/harness update
 scripts/bin/harness status
 scripts/bin/harness doctor
+scripts/bin/harness update --dry-run
+scripts/bin/harness update
 ```
 
-`update` reads the published core-release pointer, downloads the platform binary
-and checksum from that exact versioned `harness-v*` GitHub release, verifies its
-bytes and version identity, and lets that candidate merge its embedded core.
-It refuses downgrades and replaces only the selected repository's local
-executable. The updater keeps
-the installed upstream base under
-`.harness-core/`, performs a three-way merge, and backs up changed files before
-activation. On Windows, use `scripts\bin\harness.exe`.
+The updater stores the exact upstream base under `.harness-core/`, performs a
+three-way merge, backs up changed files, and activates the result
+transactionally.
 
-An overlapping local/upstream edit stops without changing managed files or the
-installed executable. Harness stages BASE, LOCAL, UPSTREAM, and RESOLVED copies
-under `.harness-core/update/`, freezes all other managed inputs, and retains the
-remotely re-verifiable candidate under `.harness-core/update-candidate/`. After
-an agent explains the semantic choice and
-receives human direction, edit the RESOLVED copy and run:
+If local and upstream edits overlap, no managed file or executable changes.
+Harness retains BASE, LOCAL, UPSTREAM, and RESOLVED copies plus the frozen
+managed input set. After a human resolves the semantic choice:
 
 ```bash
 scripts/bin/harness update --continue --dry-run
 scripts/bin/harness update --continue
 ```
 
-Use `scripts/bin/harness update --abort` to discard the staged resolution. A
-continuation fails if any managed file or staged input changed after conflict
-detection.
+Use `scripts/bin/harness update --abort` to discard only the staged resolution.
 
-Installations older than the first release containing self-update discovery
-cannot discover that release with their old executable. Refresh those once with
-the platform installer; subsequent releases use `harness update` directly.
+## Optional Skills
 
-For an older installation with a generated, long `AGENTS.md`, refresh it to the
-small marked block:
-
-```bash
-curl -fsSL "https://raw.githubusercontent.com/hoangnb24/repository-harness/main/scripts/install-harness.sh?$(date +%s)" | bash -s -- --merge --refresh-agent-shim --yes
-```
-
-For Claude Code, add `--claude` (PowerShell: `-Claude`). This creates or updates
-a marked block in `CLAUDE.md` that imports `AGENTS.md`; existing local
-instructions are preserved and backed up before changes.
-
-## Try The Flow
-
-[`docs/demo/README.md`](docs/demo/README.md) follows concrete examples through
-the four workflow cases. The important cause and effect is simple:
-
-- small entrypoint → less instruction loading and less drift;
-- authoritative repository map → agents retrieve only relevant context;
-- plans only for genuinely durable work → small changes stay cheap while long
-  work survives session boundaries;
-- repo-native tests → completion is proved by behavior rather than workflow
-  bookkeeping;
-- explicit pause conditions → consequential product choices remain human-owned.
-
-## Optional Compatibility Control Plane
-
-The Rust CLI, SQLite schema, feature intake, story matrix, trace scoring,
-improvement proposals, and orchestration contract remain supported for an
-external runner or team that explicitly selects them. They are not
-prerequisites for ordinary repository work.
-
-Install that complete compatibility bundle explicitly:
-
-```bash
-scripts/install-harness.sh --with-cli --yes /path/to/project
-```
-
-```powershell
-./scripts/install-harness.ps1 -WithCli -Yes -Directory C:\path\to\project
-```
-
-Then bootstrap its ignored local database:
-
-```bash
-scripts/bootstrap-harness.sh
-```
-
-```powershell
-.\scripts\bootstrap-harness.ps1
-```
-
-Then use `scripts/bin/harness-cli` (or the Windows `.exe`). See
-[`scripts/README.md`](scripts/README.md) and
-the [`compatibility index`](docs/compatibility/README.md).
-One independent consumer is
-[Symphony](https://github.com/hoangnb24/symphony); it is not installed as part
-of this repository. Symphony owns work selection, agent runs, worktrees,
-conflict/retry policy, changeset coordination, PR/review synchronization, and
-its runtime evidence. Harness retains only the generic atomic protocol
-primitives that protect repository state.
-
-## Repository Structure
+Brownfield onboarding is explicit and read-only first:
 
 ```text
-project/
-  .agents/
-    skills/
-      onboard-repository/
-      audit-onboarding-proposal/
-  AGENTS.md
-  docs/
-    WORKFLOW.md
-    HARNESS.md
-    ARCHITECTURE.md
-    product/
-    plans/
-      active/
-      completed/
-    decisions/
-    templates/
-  scripts/
-  tests/
+$onboard-repository
 ```
 
-## Contributing
+Harness improvement is also explicit and requires baseline-to-rerun evidence:
 
-See [the contributing guide](https://github.com/hoangnb24/repository-harness/blob/main/CONTRIBUTING.md).
-Especially useful contributions are
-real agent failure cases, examples of application legibility, mechanical
-architecture checks, smaller default instructions, and validation that proves
-user-visible behavior.
+```text
+$improve-harness
+```
 
-Short description:
+Engineering advice is a separate opt-in payload:
 
-> A repository-centered engineering harness for coding agents: compact
-> instructions, navigable context, durable plans when needed, decisions, and
-> executable validation.
+```bash
+scripts/install-harness.sh --with-engineering-wisdom --yes /path/to/project
+```
+
+No skill runs during installation or ordinary work.
+
+## What We Prove
+
+Harness owns three release-evidence boundaries:
+
+1. **Fresh installation:** the declared core is installed without fabricated
+   application truth or hidden lifecycle state.
+2. **Repository navigation:** an agent follows repository authority, avoids
+   speculative product policy, and can stop at a real decision boundary.
+3. **Safe maintenance:** updates verify identity and checksum, preserve local
+   edits, stage conflicts, reject drift, and recover interrupted transactions.
+
+Operating an arbitrary consumer application end to end remains consumer-owned
+research. Harness does not claim that installation alone supplies runtimes,
+fixtures, credentials, logs, or interface automation.
+
+## Protocol V1 End Of Life
+
+The former SQLite `harness-cli` and machine protocol v1 ended support on
+2026-08-10. The last published compatibility release is
+`harness-cli-v0.1.22`. Existing consumers may pin that immutable release, but
+the current repository no longer builds, installs, tests, or publishes it.
+
+Harness does not automatically delete legacy binaries, databases, schemas, or
+state from consumer repositories.
+
+See
+[`decision 0027`](docs/decisions/0027-end-protocol-v1-and-focus-repository-protocol.md).
+
+## Development
+
+```bash
+scripts/validate-premerge.sh
+```
+
+The contract runs Rust formatting, tests, Clippy, installer and workflow
+checks, release guards, documentation checks, shell syntax, and
+`git diff --check`.

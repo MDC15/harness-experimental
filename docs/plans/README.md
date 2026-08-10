@@ -1,60 +1,27 @@
 # Execution Plans
 
-Execution plans are Git-native working memory for complex tasks. They preserve
-enough context for another agent or human to resume work without reconstructing
-intent from chat history or a partial diff.
+Plans are Git-native working memory for complex tasks.
 
-## When To Create A Plan
-
-Use an ephemeral plan for bounded, single-session work.
-
-Create one durable plan when work spans sessions, coordinates contributors, has
-meaningful dependencies or ordering, requires recovery steps, or would be unsafe
-to resume from the diff alone.
-
-Use `docs/templates/exec-plan.md` and place the file under `active/`.
-For an explicitly authorized baseline-to-rerun Harness experiment, use
-`docs/templates/harness-improvement.md` instead.
-
-## Lifecycle
+Use an ephemeral plan for bounded, single-session work. Create one file under
+`active/` when work spans sessions, coordinates contributors, has meaningful
+dependencies, needs recovery, or cannot safely resume from its diff.
 
 ```text
 docs/plans/active/<slug>.md
-  -> update progress and decisions during implementation
-  -> record final validation and result
+  -> keep progress, decisions, recovery, and validation current
+  -> record the verified result
   -> move to docs/plans/completed/<slug>.md
 ```
 
-The plan is the primary task artifact. Do not split one task across parallel
-story, overview, design, validation, and trace files unless a document has an
-independent long-term audience.
+Use `docs/templates/exec-plan.md`. Do not split one task into story, design,
+trace, and validation records without an independent audience.
 
-Promote a decision into `docs/decisions/` when it changes lasting product
-behavior, architecture, data ownership, public compatibility, security policy,
-or validation requirements. Keep local implementation choices in the plan.
+## Active
 
-## Active Plans
+No durable work is currently active.
 
-- `application-legibility.md`: prove one complete real-consumer runtime,
-  reproduction, diagnosis, implementation, verification, and cleanup loop.
+## History
 
-## Completed Plans
-
-See `completed/README.md`. Phase 1 and Phase 2 are retained there because they
-record consequential source-of-truth, payload, and compatibility transitions.
-Phase 4 is retained because it records the consumer audit, explicit-intent
-boundary, write freeze, and decision to preserve the still-used compatibility
-implementation.
-Phase 5 is retained because it records the final optional-consumer ownership
-boundary and why generic atomic protocol primitives remain in compatibility.
-The Rust core-maintenance plan is retained because it records the provenance,
-three-way merge, transaction, bootstrap, and release boundaries of `harness`.
-The repository-cleanup plan is retained because it records the removal boundary
-between current product proof, published compatibility, and one-time migration
-verification.
-The self-update plan is retained because it records release discovery,
-candidate handoff, executable replacement, conflict staging, human-directed
-agent resolution, and recovery boundaries.
-The self-update hardening plan is retained because it records the application
-orchestration boundary, full-plan freezing, candidate trust, installer
-continuation, and executable-skew recovery added after independent review.
+Completed plans may be removed from the current tree when decisions, code,
+tests, and Git history preserve their lasting result. This keeps current
+retrieval focused without deleting provenance.

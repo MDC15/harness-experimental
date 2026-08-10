@@ -43,8 +43,8 @@ Use focused tests for local rules, integration tests for boundaries, end-to-end
 interaction for user-visible behavior, recovery rehearsal for dangerous
 operations, and measurements for reliability or performance.
 
-Harness rows, proof flags, trace tiers, context scores, and entropy scores do not
-prove product behavior by themselves.
+Plans, checklists, and completion messages do not prove product behavior by
+themselves.
 
 ## Task Flows
 
@@ -60,8 +60,7 @@ Restate the outcome, inspect its authority, implementation, patterns, and proof,
 make the smallest coherent change, run focused and required checks, and report
 the outcome, changes, evidence, and limits.
 
-No bootstrap, intake, story, matrix, trace, scoring, audit, or proposal command
-is required.
+No parallel lifecycle record is required.
 
 ### Durable Planned Change
 
@@ -106,10 +105,3 @@ A change is complete when the outcome exists or its blocker is explicit,
 repository truth remains current, behavior-appropriate proof passed or its gap
 is disclosed, any required plan is current, and the report separates facts,
 limits, and unattempted work. Descriptions do not replace observed proof.
-
-## Compatibility Control Plane
-
-The Rust CLI and SQLite layer retain historical and external-orchestration
-compatibility. Their lifecycle commands are not the default workflow. Use them
-only when explicitly requested, maintaining that surface, or required by an
-external orchestrator's contract.

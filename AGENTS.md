@@ -25,7 +25,6 @@ and validation material.
 - Claim completion only with relevant executable or observable evidence. Report
   the outcome, important changes, validation, and unresolved risks.
 
-SQLite intake, story, trace, scoring, audit, and proposal commands are optional
-compatibility features. Use them only when explicitly requested or required by
-an external orchestrator.
+Harness has no task database or orchestration lifecycle. Use repository-owned
+plans and behavior-level proof; do not create parallel control-plane state.
 <!-- HARNESS:END -->

@@ -4,110 +4,48 @@ set -euo pipefail
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 temp=$(mktemp -d)
 trap 'rm -rf "$temp"' EXIT
-cli="$root/target/debug/harness-cli"
 fixture="$temp/repository"
-db="$fixture/harness.db"
-mkdir -p "$fixture/scripts"
-cp -R "$root/scripts/schema" "$fixture/scripts/schema"
-printf 'repository sentinel\n' >"$fixture/SENTINEL.txt"
+mkdir -p "$fixture/docs/product" "$fixture/docs/plans/active" "$fixture/src"
 
-cargo build --quiet --manifest-path "$root/Cargo.toml" -p harness-cli --locked
+printf 'A refund over USD 500 requires finance approval.\n' +  >"$fixture/docs/product/refunds.md"
+printf 'unchanged application\n' >"$fixture/src/app.txt"
 
-run() {
-  HARNESS_REPO_ROOT="$fixture" HARNESS_DB_PATH="$db" "$cli" "$@"
+fingerprint() {
+  find "$fixture" -type f -print0 | LC_ALL=C sort -z |
+    xargs -0 shasum -a 256 | shasum -a 256 | awk '{print $1}'
 }
 
-run_logged() {
-  local run_id=$1
-  shift
-  HARNESS_REPO_ROOT="$fixture" HARNESS_DB_PATH="$db" HARNESS_RUN_ID="$run_id" \
-    "$cli" "$@"
+assert_no_hidden_control_plane() {
+  [[ ! -e "$fixture/harness.db" ]]
+  [[ ! -e "$fixture/.harness" ]]
+  [[ ! -e "$fixture/scripts/bin/harness-cli" ]]
+  [[ -z "$(find "$fixture" -type f \( -name '*.changeset.jsonl' -o -name '*.sqlite' \) -print -quit)" ]]
 }
 
-logical_hash() {
-  sqlite3 "$db" '.dump' | shasum -a 256 | awk '{print $1}'
-}
+# Read-only discovery changes nothing and needs no lifecycle record.
+before=$(fingerprint)
+grep -Fq 'requires finance approval' "$fixture/docs/product/refunds.md"
+[[ "$before" == "$(fingerprint)" ]]
+assert_no_hidden_control_plane
 
-state_fingerprint() {
-  local changeset_hash=absent
-  if [[ -d "$fixture/.harness/changesets" ]]; then
-    changeset_hash=$(find "$fixture/.harness/changesets" -type f -name '*.changeset.jsonl' -print |
-      LC_ALL=C sort | shasum -a 256 | awk '{print $1}')
-  fi
-  printf '%s|%s|%s|%s|%s\n' \
-    "$(logical_hash)" \
-    "$(sqlite3 "$db" 'SELECT count(*) FROM intake;')" \
-    "$(sqlite3 "$db" 'SELECT count(*) FROM trace;')" \
-    "$(shasum -a 256 "$fixture/SENTINEL.txt" | awk '{print $1}')" \
-    "$changeset_hash"
-}
+# A bounded, authorized repository change writes only its requested artifact.
+printf 'Refunds at or below USD 500 may be approved by support leads.\n' +  >>"$fixture/docs/product/refunds.md"
+grep -Fq 'support leads' "$fixture/docs/product/refunds.md"
+[[ -z "$(find "$fixture/docs/plans/active" -type f -print -quit)" ]]
+assert_no_hidden_control_plane
 
-# Missing-state diagnosis is discovery only: it reports the missing database
-# without creating the file it was asked to inspect.
-missing="$temp/missing.db"
-HARNESS_REPO_ROOT="$fixture" HARNESS_DB_PATH="$missing" "$cli" query contract --json \
-  >"$temp/missing-contract.json"
-jq -e '.result.database_state == "missing" and .result.database_schema_version == null' \
-  "$temp/missing-contract.json" >/dev/null
-[[ ! -e "$missing" ]]
+# A materially ambiguous request stops before application mutation.
+before_app=$(shasum -a 256 "$fixture/src/app.txt" | awk '{print $1}')
+grep -Fq 'materially different choices remain' "$root/docs/WORKFLOW.md"
+grep -Fq 'stop and request the smallest decision' "$root/docs/WORKFLOW.md"
+after_app=$(shasum -a 256 "$fixture/src/app.txt" | awk '{print $1}')
+[[ "$before_app" == "$after_app" ]]
+assert_no_hidden_control_plane
 
-run init >/dev/null
-for story in READ FAIL CHANGE; do
-  run story add --id "US-$story" --title "$story task" --lane normal --verify true >/dev/null
-done
+# Durable work uses one Git-native plan and no parallel task database.
+plan="$fixture/docs/plans/active/refund-provider-migration.md"
+printf '%s\n' +  '# Execution Plan: Refund Provider Migration' +  '## Status' 'Active' +  '## Outcome' 'Move refunds without losing accepted requests.' +  '## Context' 'Current provider contract.' +  '## Scope' 'Provider boundary only.' +  '## Approach' 'Freeze, migrate, verify.' +  '## Risks And Recovery' 'Retain the old provider until reconciliation passes.' +  '## Progress' '- [ ] Reconciliation proof.' +  '## Decisions' '- No task-local decision yet.' +  '## Validation' '- Focused proof pending.' +  '## Result' 'Pending.' >"$plan"
+[[ -f "$plan" ]]
+assert_no_hidden_control_plane
 
-# Review/diagnose/status operations may inspect broad state, but they must not
-# alter logical DB content, intake/trace counts, repository files, or semantic
-# operation logs.
-before_read_only=$(state_fingerprint)
-run query matrix --active --summary >"$temp/matrix.txt"
-run query stories --json >"$temp/stories.json"
-run query sql 'WITH active AS (SELECT id FROM story WHERE status="planned") SELECT count(*) FROM active;' \
-  >"$temp/select.txt"
-run audit >"$temp/audit.txt"
-run propose >"$temp/propose.txt"
-run query tools --capability optional-provider --status present --json >"$temp/tools.json"
-after_read_only=$(state_fingerprint)
-[[ "$before_read_only" == "$after_read_only" ]]
-grep -Fq 'US-READ' "$temp/matrix.txt"
-jq -e '.result.stories | length == 3' "$temp/stories.json" >/dev/null
-jq -e 'length == 0' "$temp/tools.json" >/dev/null
-[[ ! -d "$fixture/.harness/changesets" ]]
-
-# A disguised write through the query surface is denied and leaves the same
-# complete state fingerprint.
-before_sql_denial=$(state_fingerprint)
-if run query sql 'PRAGMA user_version=999;' >"$temp/sql-write.out" 2>"$temp/sql-write.err"; then
-  echo "task eval: query sql unexpectedly accepted a mutating PRAGMA" >&2
-  exit 1
-fi
-grep -Fq 'query sql is read-only' "$temp/sql-write.err"
-[[ "$(state_fingerprint)" == "$before_sql_denial" ]]
-
-# Completion without the active-state prerequisite is rejected before proof or
-# semantic logging, so a failed implementation attempt has no side effects.
-before_failed_completion=$(state_fingerprint)
-if run_logged eval_failed story complete US-FAIL >"$temp/failed.out" 2>"$temp/failed.err"; then
-  echo "task eval: planned story unexpectedly completed" >&2
-  exit 1
-fi
-grep -Fq 'move it to in_progress or changed before completion' "$temp/failed.err"
-[[ "$(state_fingerprint)" == "$before_failed_completion" ]]
-[[ ! -e "$fixture/.harness/changesets/eval_failed.changeset.jsonl" ]]
-
-# An explicitly authorized change has the opposite oracle: it must produce the
-# requested state transition, fresh passing proof, and exactly the expected
-# semantic operations.
-run_logged eval_change story update --id US-CHANGE --status in_progress >/dev/null
-run_logged eval_change story complete US-CHANGE >/dev/null
-[[ "$(sqlite3 "$db" "SELECT status FROM story WHERE id='US-CHANGE';")" == implemented ]]
-[[ "$(sqlite3 "$db" "SELECT last_verified_result FROM story WHERE id='US-CHANGE';")" == pass ]]
-changeset="$fixture/.harness/changesets/eval_change.changeset.jsonl"
-[[ -f "$changeset" ]]
-jq -s -e 'map(.op) == ["changeset.header", "story.update", "story.complete"]' \
-  "$changeset" >/dev/null
-[[ "$(sqlite3 "$db" "SELECT status FROM story WHERE id='US-FAIL';")" == planned ]]
-[[ "$(sqlite3 "$db" 'SELECT count(*) FROM intake;')" == 0 ]]
-[[ "$(sqlite3 "$db" 'SELECT count(*) FROM trace;')" == 0 ]]
-
-echo "representative read-only, denied, missing-tool, failed-proof, and authorized-change task effects passed"
+echo "read-only, bounded, ambiguity-stop, durable-plan, and no-hidden-control-plane effects passed"

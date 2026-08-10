@@ -8,8 +8,8 @@ Accepted and active.
 
 ## Context
 
-Decisions 0020 and 0023 kept the default installation small and excluded
-generic evaluation machinery. Application-legibility work then tested an
+Decision 0020 kept the default installation small and excluded generic
+evaluation machinery. Application-legibility work then tested an
 explicit, repository-owned onboarding workflow against the brownfield
 `e-inna-brain` consumer.
 
@@ -48,10 +48,10 @@ user did not request onboarding.
    updates, and ordinary work do not require Python. A missing runtime
    prerequisite must stop the invoked skill safely rather than trigger an
    installer-side dependency installation.
-7. This decision narrowly amends decisions 0020 and 0023. The installer still
-   has exactly two profiles, and the default core still excludes generic
-   benchmarks, trace scoring, orchestrators, application adapters, databases,
-   and the compatibility control plane.
+7. This decision narrowly amends decision 0020. The installer still has one
+   core profile; engineering wisdom remains an independent opt-in add-on. The
+   core excludes generic benchmarks, trace scoring, orchestrators, application
+   adapters, databases, and any consumer runtime.
 
 ## Alternatives Considered
 
