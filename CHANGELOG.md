@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-08-10 - PR #64
+
+- refactor(core): end protocol v1 support (@hoangnb24)
+- Merge commit: `1df6b301636de2268aa06b0bac5b85b3541ac274`
+- Harness core candidate: `harness-v0.1.8` (publication requires platform proof)
+- Changed files: 396 total (first 20 shown)
+  - `.github/ISSUE_TEMPLATE/real-world-example.md`
+  - `.github/workflows/harness-cli-release.yml`
+  - `.github/workflows/harness-release.yml`
+  - `.github/workflows/post-merge-maintenance.yml`
+  - `.github/workflows/premerge.yml`
+  - `.gitignore`
+  - `.harness/changesets/run_1783916400_us102.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_execution_intake.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_reproducible_core_state.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_us115.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_us116.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_us117.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_us117_complete.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_us118.changeset.jsonl`
+  - `.harness/changesets/run_20260720_e15_us119.changeset.jsonl`
+  - `.harness/changesets/run_auto_01784535496798252000_0000047583_000000.changeset.jsonl`
+  - `.harness/changesets/run_auto_01784549926906970000_0000020925_000000.changeset.jsonl`
+  - `.harness/changesets/run_auto_01784550199340549000_0000025691_000000.changeset.jsonl`
+  - `.harness/changesets/run_auto_01784550758040287000_0000037021_000000.changeset.jsonl`
+  - `.harness/core-state/harness.db`
+  - _… 376 additional file(s) omitted from this entry._
+
 ## Unreleased - Protocol v1 end of life
 
 - End support for the SQLite protocol-v1 control plane and `harness-cli`.
