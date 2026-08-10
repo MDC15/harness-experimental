@@ -31,8 +31,8 @@ to provide the accepted merged document.
    exact versioned GitHub release, verifies the bytes, requires the candidate's
    reported version to equal the pointer version, and rejects a version older
    than either the installed core or executing binary. It does not
-   use GitHub's global latest release because the independent `harness-cli`
-   release train may be newer and does not contain core assets.
+   use GitHub's global latest release because only the dedicated core pointer
+   defines the expected asset inventory.
 3. The candidate owns interpretation and installation of its embedded payload.
    Direct version jumps use the exact installed base and the candidate payload;
    a future incompatible provenance schema must reject explicitly rather than

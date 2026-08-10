@@ -4,77 +4,46 @@ Date: 2026-07-21
 
 ## Status
 
-Implemented. Cross-platform release publication completes after merge to main.
+Accepted and implemented.
 
 ## Context
 
-The default Harness core is currently copied into a consumer repository by
-separate Bash and PowerShell installers. Merge mode safely preserves existing
-files by skipping them, but this also prevents upstream workflow improvements
-from reaching an installed core. Override mode can replace consumer-owned
-documentation and is not an acceptable routine update path.
-
-The optional Rust `harness-cli` owns the historical SQLite lifecycle and
-orchestration protocol. Making that compatibility control plane a prerequisite
-for ordinary core maintenance would restore the dependency that decisions 0019
-and 0020 removed.
+Copy-on-install could preserve existing files only by skipping them or replacing
+them wholesale. It could not safely deliver upstream workflow corrections into
+a locally customized repository.
 
 ## Decision
 
-The next upstream product goal is a Rust CLI named `harness`.
+The product includes one Rust CLI named `harness`.
 
-`harness` will be installed with the default core and will own:
+It owns:
 
-- initial core installation after the platform bootstrap selects the binary;
-- safe core updates based on installed provenance and three-way comparison;
-- dry-run and conflict reporting before consumer files change;
-- recoverable, atomic application of an accepted update; and
-- core version, integrity, and installation diagnostics.
+- initial core installation after platform bootstrap;
+- exact installed provenance;
+- three-way core updates;
+- dry-run and conflict reporting;
+- recoverable transactional application;
+- status and integrity diagnostics; and
+- versioned candidate handoff and executable replacement.
 
-`harness` will not own intake, stories, matrices, traces, scoring, proposals,
-SQLite lifecycle state, work selection, orchestration, or evaluation. Those
-surfaces remain optional compatibility or external-product responsibilities.
+It does not own consumer product behavior, task tracking, work selection,
+orchestration, evaluation, or application operation.
 
-The existing Bash and PowerShell entry scripts become thin platform
-bootstraps. They must download an immutable, checksum-verified `harness`
-artifact and delegate installation rather than independently implementing core
-update semantics.
-
-The compatibility behavior remains separately available through `harness-cli`.
+Bash and PowerShell are thin platform bootstraps. They download an immutable,
+checksum-verified candidate and delegate product semantics to the Rust binary.
 
 ## Alternatives Considered
 
-1. **Keep copy-on-install with manual migrations.** Rejected as the target
-   because important core corrections would remain fragmented across consumer
-   repositories.
-2. **Add update behavior independently to Bash and PowerShell.** Rejected
-   because filesystem, merge, recovery, and provenance semantics would be
-   duplicated across platforms.
-3. **Extend the optional SQLite control-plane CLI.** Rejected because ordinary
-   core maintenance must not reactivate the historical lifecycle dependency.
-4. **Create a separately named updater.** Rejected because installation and
-   maintenance are one user-facing product; the tool should simply be
-   `harness`.
+1. **Keep manual copy upgrades.** Rejected because upstream corrections would
+   remain fragmented across consumers.
+2. **Duplicate update semantics in Bash and PowerShell.** Rejected because
+   merge, recovery, provenance, and transaction behavior need one owner.
+3. **Create a separately named updater.** Rejected because installation and
+   maintenance are one user-facing product.
 
 ## Consequences
 
-Positive:
-
 - Core installation and maintenance have one cross-platform implementation.
-- Consumers can receive upstream improvements without silently losing local
-  changes.
-- The product has an explicit provenance and diagnostics surface.
-- The compatibility control plane remains outside ordinary repository work.
-
-Tradeoffs:
-
-- The default core will gain a small binary dependency.
-- Artifact publication and bootstrap verification become part of the core
-  release contract.
-- Merge ownership, conflict UX, recovery, and migration from existing installs
-  require executable proof before cutover.
-
-## Follow-Up
-
-Implementation and validation are recorded in
-`docs/plans/completed/rust-harness-core-maintenance-cli.md`.
+- Consumers can receive improvements without silently losing local changes.
+- Artifact identity, release publication, conflict UX, and recovery require
+  executable proof.

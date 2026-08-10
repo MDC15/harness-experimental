@@ -112,6 +112,5 @@ it.
 ## What Is Deliberately Absent
 
 None of these default flows requires a story row, proof matrix, trace score,
-audit record, proposal, or local SQLite database. Those remain available as a
-compatibility control plane when an external orchestrator explicitly needs
-them; they do not sit between a normal request and repository work.
+audit record, proposal, or parallel task database. Those are not part of the
+current product and do not sit between a normal request and repository work.

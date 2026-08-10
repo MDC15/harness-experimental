@@ -46,12 +46,7 @@ jobs:
       - name: Install validation dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install --yes jq ripgrep sqlite3
-      - name: Bootstrap tracked core state from a fresh checkout
-        run: |
-          test ! -e harness.db
-          scripts/bootstrap-harness.sh
-          scripts/verify-materialized-core-parity.sh
+          sudo apt-get install --yes jq ripgrep
       - name: Run repository contract
         run: scripts/validate-premerge.sh
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased - Protocol v1 end of life
+
+- End support for the SQLite protocol-v1 control plane and `harness-cli`.
+- Keep `harness-cli-v0.1.22` as the last published compatibility release; Git
+  history and immutable release artifacts remain the archive.
+- Focus current development and releases on the repository protocol and the
+  safe `harness` installer/updater.
+- Preserve pre-existing legacy databases, schemas, scripts, and CLI binaries
+  during install and update; removal remains consumer-owned.
+
 ## 2026-07-23 - PR #62
 
 - feat(skills): install repository onboarding workflow (@hoangnb24)
