@@ -63,7 +63,8 @@ The default core contains:
 - product, decision, and execution-plan structure;
 - optional templates for durable plans, decisions, application runbooks, and
   evidence-backed Harness improvements; and
-- explicit-only onboarding and proposal-audit skills.
+- an invariant-encoding pattern and skill, plus explicit-only onboarding and
+  proposal-audit skills.
 
 It does not install application architecture, product policy, validation
 commands, credentials, a database, schemas, orchestration, or background
@@ -120,6 +121,13 @@ Use `scripts/bin/harness update --abort` to discard only the staged resolution.
 
 ## Optional Skills
 
+Invariant enforcement routes accepted rules through repository-native
+validation:
+
+```text
+$encode-invariant
+```
+
 Brownfield onboarding is explicit and read-only first:
 
 ```text
@@ -138,7 +146,8 @@ Engineering advice is a separate opt-in payload:
 scripts/install-harness.sh --with-engineering-wisdom --yes /path/to/project
 ```
 
-No skill runs during installation or ordinary work.
+No skill runs during installation. Onboarding and Harness improvement remain
+explicit-only; invariant encoding responds only to matching work requests.
 
 ## What We Prove
 

@@ -24,6 +24,7 @@ required_agent_text=(
   'docs/plans/active/'
   'identify repository authority for each new externally'
   'configurable defaults are not authority'
+  'docs/patterns/encoding-invariants.md'
   'explicitly asked to use `$improve-harness`'
   'product intent remains ambiguous'
   'Harness has no task database or orchestration lifecycle.'
@@ -42,6 +43,10 @@ required_workflow_text=(
   'Add rate limiting'
   'must stop'
   'What Proves The Behavior?'
+  'Does The Work Encode An Invariant?'
+  'positive proof'
+  'negative proof'
+  'branch protection is externally configured or unverified'
   'Operate The Application'
   'Improve The Harness'
   'No parallel lifecycle record is required.'
@@ -57,6 +62,8 @@ payloads=(
   .agents/skills/audit-onboarding-proposal/SKILL.md
   .agents/skills/audit-onboarding-proposal/agents/openai.yaml
   .agents/skills/audit-onboarding-proposal/scripts/validate_evidence_capsule.py
+  .agents/skills/encode-invariant/SKILL.md
+  .agents/skills/encode-invariant/agents/openai.yaml
   .agents/skills/improve-harness/SKILL.md
   .agents/skills/improve-harness/agents/openai.yaml
   .agents/skills/onboard-repository/SKILL.md
@@ -67,6 +74,7 @@ payloads=(
   .agents/skills/onboard-repository/scripts/render_patch.py
   docs/WORKFLOW.md
   docs/README.md
+  docs/patterns/encoding-invariants.md
   docs/product/README.md
   docs/plans/README.md
   docs/plans/active/README.md
@@ -89,6 +97,39 @@ skill_metadata=(
 for metadata in "${skill_metadata[@]}"; do
   grep -Fq 'allow_implicit_invocation: false' "$root/$metadata"
 done
+grep -Fq 'allow_implicit_invocation: true' \
+  "$root/.agents/skills/encode-invariant/agents/openai.yaml"
+
+invariant_skill="$root/.agents/skills/encode-invariant/SKILL.md"
+for trigger in \
+  'enforce architecture, reliability, security, or quality boundaries' \
+  'prevent a documented violation from recurring' \
+  'add structural guards' \
+  'turn accepted rules into validation'; do
+  grep -Fq "$trigger" "$invariant_skill"
+done
+grep -Fq 'Do not use to infer or invent policy from conventions, code patterns, tests, defaults, or undocumented preferences.' \
+  "$invariant_skill"
+required_invariant_method=(
+  "Reuse the repository's existing test, build, task, lint, scan, or validation"
+  'Choose the lowest deterministic layer that sees the complete accepted'
+  'name the violating item, the broken rule, the'
+  'authority source, and a concrete compliant next action'
+  'local validation command and observed result'
+  'optional hook availability, if any'
+  'CI invocation discovered or absent'
+  'branch-protection enforcement verified or unverified'
+)
+for text in "${required_invariant_method[@]}"; do
+  grep -Fq "$text" "$invariant_skill"
+done
+
+onboarding_skill="$root/.agents/skills/onboard-repository/SKILL.md"
+grep -Fq 'Compare documented invariants with executable checks' "$onboarding_skill"
+grep -Fq '**Unenforced rule:**' "$onboarding_skill"
+grep -Fq '**Check lacking authority:**' "$onboarding_skill"
+grep -Fq 'Do not add, edit, delete, enable, or execute a guard during onboarding.' \
+  "$onboarding_skill"
 
 grep -Fq 'read_source_text "scripts/agent-harness-block.md"' "$root/scripts/install-harness.sh"
 grep -Fq 'read_source_text "scripts/claude-harness-block.md"' "$root/scripts/install-harness.sh"

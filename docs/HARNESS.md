@@ -26,6 +26,7 @@ The core provides:
 - workflow and documentation maps;
 - product, decision, and execution-plan locations;
 - templates for durable work and application operation;
+- an invariant-encoding pattern and request-triggered skill; and
 - explicit-only onboarding, proposal-audit, and improvement skills.
 
 It provides no fabricated product domains or validation commands.

@@ -41,7 +41,32 @@ grep -Fq 'Harness profile: core' "$temp/fresh.out"
 [[ -x "$fresh/scripts/bin/harness" ]]
 [[ -f "$fresh/.harness-core/manifest.json" ]]
 [[ -f "$fresh/docs/WORKFLOW.md" ]]
+[[ -f "$fresh/docs/patterns/encoding-invariants.md" ]]
+[[ -f "$fresh/.agents/skills/encode-invariant/SKILL.md" ]]
 cmp -s <(extract_block "$fresh/AGENTS.md") "$root/scripts/agent-harness-block.md"
+grep -Fq 'docs/patterns/encoding-invariants.md' "$fresh/AGENTS.md"
+grep -Fq 'Does The Work Encode An Invariant?' "$fresh/docs/WORKFLOW.md"
+grep -Fq 'Positive proof' "$fresh/docs/patterns/encoding-invariants.md"
+grep -Fq 'Negative proof' "$fresh/docs/patterns/encoding-invariants.md"
+grep -Fq 'prevent a documented violation from recurring' \
+  "$fresh/.agents/skills/encode-invariant/SKILL.md"
+grep -Fq "Reuse the repository's existing test, build, task, lint, scan, or validation" \
+  "$fresh/.agents/skills/encode-invariant/SKILL.md"
+grep -Fq 'Choose the lowest deterministic layer that sees the complete accepted' \
+  "$fresh/.agents/skills/encode-invariant/SKILL.md"
+grep -Fq 'authority source, and a concrete compliant next action' \
+  "$fresh/.agents/skills/encode-invariant/SKILL.md"
+for level in \
+  'local validation command and observed result' \
+  'optional hook availability, if any' \
+  'CI invocation discovered or absent' \
+  'branch-protection enforcement verified or unverified'; do
+  grep -Fq "$level" "$fresh/.agents/skills/encode-invariant/SKILL.md"
+done
+grep -Fq 'Compare documented invariants with executable checks' \
+  "$fresh/.agents/skills/onboard-repository/SKILL.md"
+grep -Fq 'allow_implicit_invocation: true' \
+  "$fresh/.agents/skills/encode-invariant/agents/openai.yaml"
 grep -Fxq 'scripts/bin/harness' "$fresh/.gitignore"
 for legacy in \
   scripts/bin/harness-cli \
