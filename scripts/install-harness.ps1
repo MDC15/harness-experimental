@@ -1,3 +1,4 @@
+[CmdletBinding()]
 param(
     [Alias("d")]
     [string]$Directory = $env:HARNESS_TARGET_DIR,
