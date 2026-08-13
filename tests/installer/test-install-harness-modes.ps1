@@ -37,6 +37,29 @@ try {
     if (!(Test-Path (Join-Path $Fresh "scripts/bin/harness.exe"))) { throw "core maintenance CLI missing" }
     if (!(Test-Path (Join-Path $Fresh ".harness-core/manifest.json"))) { throw "core provenance missing" }
     if (!(Test-Path (Join-Path $Fresh "docs/WORKFLOW.md"))) { throw "core workflow missing" }
+    if (!(Test-Path (Join-Path $Fresh "docs/patterns/encoding-invariants.md"))) { throw "invariant pattern missing" }
+    if (!(Test-Path (Join-Path $Fresh ".agents/skills/encode-invariant/SKILL.md"))) { throw "encode-invariant skill missing" }
+    $FreshAgents = Get-Content -Raw (Join-Path $Fresh "AGENTS.md")
+    if (!$FreshAgents.Contains("docs/patterns/encoding-invariants.md")) { throw "invariant routing missing" }
+    $FreshWorkflow = Get-Content -Raw (Join-Path $Fresh "docs/WORKFLOW.md")
+    if (!$FreshWorkflow.Contains("Does The Work Encode An Invariant?")) { throw "invariant workflow missing" }
+    $FreshInvariantSkill = Get-Content -Raw (Join-Path $Fresh ".agents/skills/encode-invariant/SKILL.md")
+    if (!$FreshInvariantSkill.Contains("prevent a documented violation from recurring")) { throw "invariant skill trigger missing" }
+    foreach ($RequiredInvariantText in @(
+        "Reuse the repository's existing test, build, task, lint, scan, or validation",
+        "Choose the lowest deterministic layer that sees the complete accepted",
+        "authority source, and a concrete compliant next action",
+        "local validation command and observed result",
+        "optional hook availability, if any",
+        "CI invocation discovered or absent",
+        "branch-protection enforcement verified or unverified"
+    )) {
+        if (!$FreshInvariantSkill.Contains($RequiredInvariantText)) { throw "invariant method missing: $RequiredInvariantText" }
+    }
+    $FreshInvariantMetadata = Get-Content -Raw (Join-Path $Fresh ".agents/skills/encode-invariant/agents/openai.yaml")
+    if (!$FreshInvariantMetadata.Contains("allow_implicit_invocation: true")) { throw "invariant skill is not request-triggered" }
+    $FreshOnboarding = Get-Content -Raw (Join-Path $Fresh ".agents/skills/onboard-repository/SKILL.md")
+    if (!$FreshOnboarding.Contains("Compare documented invariants with executable checks")) { throw "onboarding invariant comparison missing" }
     $Gitignore = Get-Content -Raw (Join-Path $Fresh ".gitignore")
     if (!$Gitignore.Contains("scripts/bin/harness.exe")) { throw "core binary ignore rule missing" }
     if ($Gitignore.Contains("harness.db")) { throw "core install wrote database ignore rules" }

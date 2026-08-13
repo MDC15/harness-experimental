@@ -34,6 +34,16 @@ impl CoreDistributionPort for EmbeddedCoreDistribution {
         )?;
         add(
             &mut files,
+            ".agents/skills/encode-invariant/SKILL.md",
+            include_bytes!("../../../../.agents/skills/encode-invariant/SKILL.md"),
+        )?;
+        add(
+            &mut files,
+            ".agents/skills/encode-invariant/agents/openai.yaml",
+            include_bytes!("../../../../.agents/skills/encode-invariant/agents/openai.yaml"),
+        )?;
+        add(
+            &mut files,
             ".agents/skills/improve-harness/SKILL.md",
             include_bytes!("../../../../.agents/skills/improve-harness/SKILL.md"),
         )?;
@@ -87,6 +97,11 @@ impl CoreDistributionPort for EmbeddedCoreDistribution {
             &mut files,
             "docs/README.md",
             include_bytes!("../../../../docs/README.md"),
+        )?;
+        add(
+            &mut files,
+            "docs/patterns/encoding-invariants.md",
+            include_bytes!("../../../../docs/patterns/encoding-invariants.md"),
         )?;
         add(
             &mut files,
@@ -160,7 +175,17 @@ mod tests {
     fn embedded_payload_is_generic_and_complete() {
         let distribution = EmbeddedCoreDistribution.current().unwrap();
         distribution.validate().unwrap();
-        assert_eq!(distribution.files.len(), 23);
+        let embedded_paths = distribution
+            .files
+            .iter()
+            .map(|file| file.path.as_str())
+            .collect::<std::collections::BTreeSet<_>>();
+        let manifest_paths = include_str!("../../../../scripts/harness-install-files.txt")
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty() && !line.starts_with('#'))
+            .collect::<std::collections::BTreeSet<_>>();
+        assert_eq!(embedded_paths, manifest_paths);
         let agents = distribution
             .files
             .iter()
@@ -178,6 +203,7 @@ mod tests {
         for skill in [
             ".agents/skills/onboard-repository/SKILL.md",
             ".agents/skills/audit-onboarding-proposal/SKILL.md",
+            ".agents/skills/encode-invariant/SKILL.md",
             ".agents/skills/improve-harness/SKILL.md",
         ] {
             let skill = distribution
@@ -201,5 +227,12 @@ mod tests {
             assert!(String::from_utf8_lossy(&metadata.content)
                 .contains("allow_implicit_invocation: false"));
         }
+        let invariant_metadata = distribution
+            .files
+            .iter()
+            .find(|file| file.path.as_str() == ".agents/skills/encode-invariant/agents/openai.yaml")
+            .unwrap();
+        assert!(String::from_utf8_lossy(&invariant_metadata.content)
+            .contains("allow_implicit_invocation: true"));
     }
 }

@@ -21,6 +21,7 @@ current_files=(
   docs/ARCHITECTURE.md
   docs/HARNESS.md
   docs/README.md
+  docs/patterns/encoding-invariants.md
   docs/product/README.md
   docs/product/installation-profiles.md
   docs/plans/README.md
@@ -37,6 +38,7 @@ current_files=(
   docs/decisions/0025-latest-release-self-update-and-human-directed-conflicts.md
   docs/decisions/0026-explicit-onboarding-skills-in-default-core.md
   docs/decisions/0027-end-protocol-v1-and-focus-repository-protocol.md
+  docs/decisions/0028-authoritative-invariant-encoding.md
   docs/research/application-legibility.md
   .github/ISSUE_TEMPLATE/real-world-example.md
 )
@@ -50,6 +52,20 @@ require docs/WORKFLOW.md '### Bounded Change'
 require docs/WORKFLOW.md '### Durable Planned Change'
 require docs/WORKFLOW.md '### Operate The Application'
 require docs/WORKFLOW.md '### Improve The Harness'
+require docs/WORKFLOW.md '### Does The Work Encode An Invariant?'
+require docs/patterns/encoding-invariants.md '## 1. Establish Authority'
+require docs/patterns/encoding-invariants.md '## 4. Prove Both Directions'
+require docs/patterns/encoding-invariants.md '## 5. Discover And Report Enforcement'
+require docs/patterns/encoding-invariants.md '| Scope | Files, modules, configuration, or runtime objects covered |'
+require docs/patterns/encoding-invariants.md 'Find the repository'
+require docs/patterns/encoding-invariants.md '| Diagnostic | Violating item, broken rule, authority pointer, and next action |'
+require docs/patterns/encoding-invariants.md '**Positive proof:**'
+require docs/patterns/encoding-invariants.md '**Negative proof:**'
+require docs/patterns/encoding-invariants.md '| Local validation |'
+require docs/patterns/encoding-invariants.md '| Optional hook |'
+require docs/patterns/encoding-invariants.md '| CI |'
+require docs/patterns/encoding-invariants.md '| Branch protection |'
+require docs/decisions/0028-authoritative-invariant-encoding.md 'Matching requests may invoke it implicitly'
 require docs/ARCHITECTURE.md 'one Rust binary'
 require README.md '## What We Prove'
 require README.md '## Protocol V1 End Of Life'
