@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-13 - PR #66
+
+- fix(installer): reject unknown PowerShell parameters (@hoangnb24)
+- Merge commit: `f5d62061eab48364151e89aaf2c518a6a11a3178`
+- Harness core candidate: `harness-v0.1.10` (publication requires platform proof)
+- Changed files: 1 total
+  - `scripts/install-harness.ps1`
+
 ## 2026-08-13 - PR #65
 
 - feat(harness): encode authoritative invariants (@hoangnb24)
