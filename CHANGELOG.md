@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-08-13 - PR #65
+
+- feat(harness): encode authoritative invariants (@hoangnb24)
+- Merge commit: `33af7f860790afbe0e2db0894249318632ed7e7a`
+- Harness core candidate: `harness-v0.1.9` (publication requires platform proof)
+- Changed files: 23 total (first 20 shown)
+  - `.agents/skills/encode-invariant/SKILL.md`
+  - `.agents/skills/encode-invariant/agents/openai.yaml`
+  - `.agents/skills/onboard-repository/SKILL.md`
+  - `AGENTS.md`
+  - `README.md`
+  - `crates/harness/src/infrastructure/embedded_distribution.rs`
+  - `docs/HARNESS.md`
+  - `docs/README.md`
+  - `docs/WORKFLOW.md`
+  - `docs/decisions/0028-authoritative-invariant-encoding.md`
+  - `docs/decisions/README.md`
+  - `docs/patterns/encoding-invariants.md`
+  - `docs/plans/completed/p1-encode-invariants.md`
+  - `docs/product/installation-profiles.md`
+  - `scripts/agent-harness-block.md`
+  - `scripts/harness-install-files.txt`
+  - `scripts/harness-release-changed.sh`
+  - `tests/docs/test-doc-contracts.sh`
+  - `tests/installer/assert-agent-authority-contract.sh`
+  - `tests/installer/test-install-harness-modes.ps1`
+  - _… 3 additional file(s) omitted from this entry._
+
 ## 2026-08-10 - PR #64
 
 - refactor(core): end protocol v1 support (@hoangnb24)
