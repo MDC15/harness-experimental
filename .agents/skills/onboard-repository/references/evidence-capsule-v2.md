@@ -45,6 +45,12 @@ and destination hashes. It supplies:
 - `hunks`: `id`, destination, complete UTF-8 `after_text`, and unknowns; and
 - `limitations`: unresolved evidence limits.
 
+When the inspected path needs no backfill, `claims` and `hunks` may both be
+empty. The bundle contains no patch markers and still authenticates its exact
+bytes and pinned producer skill and requires all four boundary kinds. This
+outcome proposes no edits; it does not certify repository completeness or turn
+an Unknown boundary into Pass. An unmatched claim or hunk remains invalid.
+
 The emitter computes the capsule and patch blocks and wraps them in:
 
 ```text

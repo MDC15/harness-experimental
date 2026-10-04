@@ -123,6 +123,10 @@ gate-3 failure and return **NO APPLY** for its unverified hunks. V1 capsules
 remain structurally valid legacy evidence but do not receive repository-aware
 source or destination verification; full semantic audit remains required.
 
+A v2 capsule with empty claims and hunks records no proposed backfill. Verify
+its authentication and boundary evidence; it supplies no patch to admit or
+approve and does not establish that the repository has no remaining gaps.
+
 A valid capsule is an authenticated index, not evidence. Independently retrieve
 every cited source from its pinned revision, hash the exact cited line range,
 verify each atomic clause, and scan the destination and adjacent sources for

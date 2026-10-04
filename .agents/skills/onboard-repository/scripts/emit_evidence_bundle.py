@@ -11,6 +11,8 @@ import sys
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable
 
+# Keep the read-only command from creating a render_patch bytecode cache.
+sys.dont_write_bytecode = True
 from render_patch import RenderError, render_patch, sha256_bytes
 
 
@@ -138,7 +140,7 @@ def build_bundle(
     producer_blob = read_blob(revision, producer_skill_path)
 
     claims_input = spec["claims"]
-    require(isinstance(claims_input, list) and claims_input, "claims must be a non-empty array")
+    require(isinstance(claims_input, list), "claims must be an array")
     claims: list[dict[str, Any]] = []
     claim_ids: set[str] = set()
     claims_by_hunk: dict[str, list[str]] = {}
@@ -205,7 +207,7 @@ def build_bundle(
         claims_by_hunk.setdefault(hunk_id, []).append(claim_id)
 
     hunks_input = spec["hunks"]
-    require(isinstance(hunks_input, list) and hunks_input, "hunks must be a non-empty array")
+    require(isinstance(hunks_input, list), "hunks must be an array")
     hunks: list[dict[str, Any]] = []
     patch_blocks: list[str] = []
     hunk_ids: set[str] = set()

@@ -337,7 +337,8 @@ def validate_capsule(
             "boundary must cover git, ignored_or_managed, runtime, and temporary_paths")
 
     claims = capsule["claims"]
-    require(isinstance(claims, list) and claims, "claims must be a non-empty array")
+    require(isinstance(claims, list), "claims must be an array")
+    require(claims or schema == SCHEMA_V2, "v1 claims must be a non-empty array")
     claim_by_id: dict[str, dict[str, Any]] = {}
     for index, claim in enumerate(claims):
         context = f"claims[{index}]"
@@ -392,7 +393,11 @@ def validate_capsule(
                 )
 
     hunks = capsule["hunks"]
-    require(isinstance(hunks, list) and hunks, "hunks must be a non-empty array")
+    require(isinstance(hunks, list), "hunks must be an array")
+    require(hunks or schema == SCHEMA_V2, "v1 hunks must be a non-empty array")
+    if not hunks:
+        require("<!-- ONBOARDING_PATCH:" not in message,
+                "no-backfill capsule must not contain patch markers")
     hunk_ids: set[str] = set()
     referenced_claims: list[str] = []
     patch_hashes: dict[str, str] = {}

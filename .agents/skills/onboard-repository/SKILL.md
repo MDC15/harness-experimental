@@ -232,7 +232,10 @@ fresh agent could execute it without undocumented human help.
 
 ### 4. Propose the smallest useful backfill
 
-Return a proposal; do not write it. Each item must include:
+Propose only missing knowledge or navigation; do not write it. When existing
+code, interfaces, commands, tests, and examples already explain the inspected
+path, retain references in the map and return no proposals. Do not create
+summary documentation merely to produce a patch. Each proposed item must include:
 
 1. the concrete agent failure it prevents;
 2. evidence and exact source paths;
@@ -349,6 +352,10 @@ claims with unhashed source ranges, complete proposed destination images,
 unknowns, and limitations. The emitter reads every pinned blob, computes every
 digest, renders each patch, and writes one authenticated bundle to stdout
 without creating a draft file.
+
+For no backfill, supply empty `claims` and `hunks` arrays. Keep all four boundary
+rows and limitations; authentication and no-mutation reporting still apply.
+There are no patch IDs or edits to approve in this outcome.
 
 ```text
 <non-materializing command that prints the JSON spec> |

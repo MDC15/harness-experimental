@@ -157,4 +157,6 @@ entry_words=$(awk '{ words += NF } END { print words }' \
 [[ "$entry_words" -le 1000 ]]
 [[ "$entry_words" -lt 2413 ]]
 
+python3 "$root/tests/workflow/test-onboarding-evidence.py"
+
 echo "repository workflow scenarios passed: harness_commands=0 entry_words=$entry_words baseline_words=2413 interventions=1/1 ambiguous tasks"
