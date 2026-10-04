@@ -7,7 +7,7 @@ The normal entrypoint is `scripts/validate-premerge.sh`.
 `crates/harness/` unit and integration tests protect:
 
 - path, hash, provenance, and distribution validation;
-- clean architecture;
+- clean architecture, including allowed and forbidden nested-module fixtures;
 - install, status, and doctor;
 - three-way updates and conflict staging;
 - complete-plan drift detection;

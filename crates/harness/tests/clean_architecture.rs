@@ -43,9 +43,57 @@ fn composition_root_is_the_only_layer_wiring_infrastructure_to_interface() {
     assert!(main.contains("SelfUpdateApplication::new"));
 }
 
+#[test]
+fn allowed_nested_dependencies_and_non_rust_files_pass() {
+    assert_forbidden(&fixture("allowed"), &["crate::interface"]);
+}
+
+#[test]
+fn forbidden_dependency_in_an_immediate_module_is_rejected() {
+    assert_fixture_rejected("immediate", "module.rs");
+}
+
+#[test]
+fn forbidden_dependency_in_a_deeply_nested_module_is_rejected() {
+    assert_fixture_rejected("nested", "first/second/module.rs");
+}
+
+fn fixture(name: &str) -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/architecture")
+        .join(name)
+}
+
+fn assert_fixture_rejected(name: &str, module: &str) {
+    let failure = std::panic::catch_unwind(|| {
+        assert_forbidden(&fixture(name), &["crate::interface"]);
+    })
+    .expect_err("forbidden fixture must fail the architecture guard");
+    let diagnostic = failure.downcast_ref::<String>().unwrap();
+    let module_path = fixture(name).join(module.split('/').collect::<PathBuf>());
+    assert!(
+        diagnostic.contains(module_path.to_str().unwrap()),
+        "{diagnostic}"
+    );
+    assert!(
+        diagnostic.contains("forbidden dependency crate::interface"),
+        "{diagnostic}"
+    );
+    assert!(diagnostic.contains("docs/ARCHITECTURE.md"), "{diagnostic}");
+    assert!(
+        diagnostic.contains("depend on an inward layer"),
+        "{diagnostic}"
+    );
+}
+
 fn assert_forbidden(root: &Path, forbidden: &[&str]) {
     for entry in fs::read_dir(root).unwrap() {
-        let path = entry.unwrap().path();
+        let entry = entry.unwrap();
+        let path = entry.path();
+        if entry.file_type().unwrap().is_dir() {
+            assert_forbidden(&path, forbidden);
+            continue;
+        }
         if path.extension().and_then(|value| value.to_str()) != Some("rs") {
             continue;
         }
@@ -53,7 +101,9 @@ fn assert_forbidden(root: &Path, forbidden: &[&str]) {
         for pattern in forbidden {
             assert!(
                 !source.contains(pattern),
-                "{} imports forbidden dependency {pattern}",
+                "{} imports forbidden dependency {pattern}: violates Rust dependency direction \
+                 (docs/ARCHITECTURE.md). Remove the outward dependency and depend on an inward layer; \
+                 wire concrete implementations in main.rs.",
                 path.display()
             );
         }
