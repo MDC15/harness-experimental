@@ -1,8 +1,5 @@
-# Completed Execution Plans
+# Optional Completed Plans
 
-Move a plan here only after its requested outcome and validation are recorded.
-Completed plans are historical evidence, not default task instructions.
-
-Keep a completed plan when it explains a consequential migration, recovery
-procedure, architectural transition, or decision history that future work may
-need. Ordinary bounded changes should rely on Git and pull-request history.
+This location is available for historical plans retained by the consumer's own
+workflow. Existing records keep their rationale, recovery details, and evidence;
+they do not become default task instructions.

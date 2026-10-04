@@ -4,7 +4,7 @@ Turn a software repository into a legible, agent-ready workspace.
 
 `repository-harness` installs a small repository protocol and a safe updater.
 The repository remains the system of record: product documents, decisions,
-plans, code, tests, CI, and runtime evidence define the work.
+code, tests, CI, and runtime evidence define the work.
 
 It is not a task database, story tracker, agent orchestrator, or application
 runtime.
@@ -21,50 +21,33 @@ Coding agents often fail for ordinary engineering reasons:
 - an agent invents product policy when the request leaves a material choice
   open.
 
-Harness provides a compact entrypoint, a navigable repository map, durable plans
-only when work needs them, explicit judgment boundaries, and mechanical
-validation.
+Harness provides a compact entrypoint, a navigable repository map, optional
+knowledge-discovery tools, and a safe maintenance binary.
 
-## Default Workflow
+## Repository Understanding
 
-```text
-read-only request
-  -> inspect the smallest authoritative surface
-  -> answer with evidence
+Find current behavior in code, types, interfaces, commands, tests, and examples.
+Keep product intent and rationale where the repository already owns them.
+Identify missing capabilities needed to act, observe, or verify, and report
+uncertainty rather than inventing commands or claiming unsupported results.
 
-bounded change
-  -> inspect authority and affected behavior
-  -> implement the smallest coherent change
-  -> run relevant proof
+Consumer repositories own task workflow and planning. Harness skills run only
+when explicitly requested; installation does not activate them.
 
-multi-session or coordinated change
-  -> create docs/plans/active/<plan>.md
-  -> keep decisions, progress, recovery, and validation current
-  -> move the validated plan to docs/plans/completed/
-
-material product ambiguity
-  -> stop before mutation
-  -> present the concrete choice and consequences
-```
-
-A typo does not need a plan. A migration spanning sessions does. A request to
-“add rate limiting” without a quota, identity key, enforcement owner, shared
-state topology, or response contract must stop before implementation.
-
-Start with [`AGENTS.md`](AGENTS.md), then
-[`docs/WORKFLOW.md`](docs/WORKFLOW.md).
+Start with [`AGENTS.md`](AGENTS.md) and the repository map in
+[`docs/README.md`](docs/README.md).
 
 ## What Gets Installed
 
 The default core contains:
 
 - a compact `AGENTS.md` entrypoint;
-- the repository workflow and documentation map;
-- product, decision, and execution-plan structure;
+- repository context and navigation;
+- optional product, decision, and execution-plan locations;
 - optional templates for durable plans, decisions, application runbooks, and
   evidence-backed Harness improvements; and
-- an invariant-encoding pattern and skill, plus explicit-only onboarding and
-  proposal-audit skills.
+- an invariant-encoding reference and explicit-only skills for discovery,
+  audit, encoding, and improvement.
 
 It does not install application architecture, product policy, validation
 commands, credentials, a database, schemas, orchestration, or background
@@ -146,8 +129,9 @@ Engineering advice is a separate opt-in payload:
 scripts/install-harness.sh --with-engineering-wisdom --yes /path/to/project
 ```
 
-No skill runs during installation. Onboarding and Harness improvement remain
-explicit-only; invariant encoding responds only to matching work requests.
+All Harness skills require explicit user invocation, including invariant
+encoding. No skill runs during installation or merely because a request
+matches its subject matter.
 
 ## What We Prove
 

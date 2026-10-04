@@ -19,7 +19,7 @@ The normal entrypoint is `scripts/validate-premerge.sh`.
 
 | Location | Protects |
 | --- | --- |
-| `tests/workflow/` | Read-only, bounded, durable-plan, authority-stop, no-hidden-control-plane, and installed onboarding evidence behavior |
+| `tests/workflow/` | Installed repository context and explicit skill configuration (textual checks), plus onboarding evidence behavior (CLI integration) |
 | `tests/installer/` | Fresh core installation, merge/override, shims, optional engineering advice, manifest integrity, and platform parity |
 | `tests/docs/` | Current authority, links, EOL boundary, and validation entrypoints |
 | `tests/maintenance/` | Core release classification and changelog rendering |

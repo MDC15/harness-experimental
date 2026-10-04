@@ -1,7 +1,8 @@
 # Exec Plan
 
-> **Compatibility template.** New work uses `docs/templates/exec-plan.md` and
-> keeps outcome, progress, decisions, recovery, and validation in one file.
+> **Optional compatibility template.** Use this split packet only when the
+> consumer repository or user chooses it. `docs/templates/exec-plan.md`
+> is another optional format; Harness requires neither format.
 
 ## Goal
 

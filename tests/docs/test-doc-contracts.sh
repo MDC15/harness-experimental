@@ -48,11 +48,11 @@ done
 
 require AGENTS.md 'Start with the requested outcome'
 require AGENTS.md 'configurable defaults are not authority'
-require docs/WORKFLOW.md '### Bounded Change'
-require docs/WORKFLOW.md '### Durable Planned Change'
-require docs/WORKFLOW.md '### Operate The Application'
-require docs/WORKFLOW.md '### Improve The Harness'
-require docs/WORKFLOW.md '### Does The Work Encode An Invariant?'
+require AGENTS.md 'Only invoke a Harness skill when the user explicitly requests it.'
+require docs/WORKFLOW.md '## Authority And Scope'
+require docs/WORKFLOW.md '## Missing Capabilities'
+require docs/WORKFLOW.md '## Trust Through Evidence'
+require docs/WORKFLOW.md '## Optional Resources'
 require docs/patterns/encoding-invariants.md '## 1. Establish Authority'
 require docs/patterns/encoding-invariants.md '## 4. Prove Both Directions'
 require docs/patterns/encoding-invariants.md '## 5. Discover And Report Enforcement'
@@ -65,7 +65,7 @@ require docs/patterns/encoding-invariants.md '| Local validation |'
 require docs/patterns/encoding-invariants.md '| Optional hook |'
 require docs/patterns/encoding-invariants.md '| CI |'
 require docs/patterns/encoding-invariants.md '| Branch protection |'
-require docs/decisions/0028-authoritative-invariant-encoding.md 'Matching requests may invoke it implicitly'
+require docs/decisions/0028-authoritative-invariant-encoding.md 'Only explicit user invocation activates it.'
 require docs/ARCHITECTURE.md 'one Rust binary'
 require README.md '## What We Prove'
 require README.md '## Protocol V1 End Of Life'
@@ -106,7 +106,6 @@ done
 executables=(
   scripts/validate-premerge.sh
   tests/workflow/test-repository-workflow.sh
-  tests/workflow/test-task-authority.sh
   tests/installer/test-install-harness-modes.sh
 )
 for executable in "${executables[@]}"; do
@@ -120,7 +119,6 @@ required_gates=(
   'tests/installer/test-install-harness-modes.sh'
   'tests/docs/test-doc-contracts.sh'
   'tests/workflow/test-repository-workflow.sh'
-  'tests/workflow/test-task-authority.sh'
   'tests/release/test-harness-release-workflow-contract.sh'
 )
 for gate in "${required_gates[@]}"; do

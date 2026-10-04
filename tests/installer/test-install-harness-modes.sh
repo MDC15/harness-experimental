@@ -44,11 +44,11 @@ grep -Fq 'Harness profile: core' "$temp/fresh.out"
 [[ -f "$fresh/docs/patterns/encoding-invariants.md" ]]
 [[ -f "$fresh/.agents/skills/encode-invariant/SKILL.md" ]]
 cmp -s <(extract_block "$fresh/AGENTS.md") "$root/scripts/agent-harness-block.md"
-grep -Fq 'docs/patterns/encoding-invariants.md' "$fresh/AGENTS.md"
-grep -Fq 'Does The Work Encode An Invariant?' "$fresh/docs/WORKFLOW.md"
+grep -Fq 'Only invoke a Harness skill when the user explicitly requests it.' "$fresh/AGENTS.md"
+grep -Fq '## Missing Capabilities' "$fresh/docs/WORKFLOW.md"
 grep -Fq 'Positive proof' "$fresh/docs/patterns/encoding-invariants.md"
 grep -Fq 'Negative proof' "$fresh/docs/patterns/encoding-invariants.md"
-grep -Fq 'prevent a documented violation from recurring' \
+grep -Fq 'Use only when the user explicitly invokes' \
   "$fresh/.agents/skills/encode-invariant/SKILL.md"
 grep -Fq "Reuse the repository's existing test, build, task, lint, scan, or validation" \
   "$fresh/.agents/skills/encode-invariant/SKILL.md"
@@ -65,7 +65,7 @@ for level in \
 done
 grep -Fq 'Compare documented invariants with executable checks' \
   "$fresh/.agents/skills/onboard-repository/SKILL.md"
-grep -Fq 'allow_implicit_invocation: true' \
+grep -Fq 'allow_implicit_invocation: false' \
   "$fresh/.agents/skills/encode-invariant/agents/openai.yaml"
 grep -Fxq 'scripts/bin/harness' "$fresh/.gitignore"
 for legacy in \

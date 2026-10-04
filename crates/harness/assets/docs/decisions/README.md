@@ -1,10 +1,8 @@
-# Decisions
+# Optional Decision Records
 
-Decision records preserve lasting product, architecture, data ownership,
-security, compatibility, and validation choices that future work must inherit.
+Retain accepted product intent and rationale here when the user or consumer
+workflow chooses a durable record. Existing decisions keep their authority.
+`docs/templates/decision.md` is an optional starting point; implementation
+knowledge remains in code, types, interfaces, tests, examples, and Git history.
 
-Use `docs/templates/decision.md`. Task-local implementation choices remain in
-the active execution plan and do not require a separate decision.
-
-An installed consumer begins with no fabricated decisions. Add local decision
-documents here as real choices are accepted, then index them in this file.
+An installed consumer begins with no fabricated decisions.

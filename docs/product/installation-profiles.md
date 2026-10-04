@@ -6,8 +6,9 @@ Harness has one product profile and one independent advisory add-on.
 
 The exact core payload is declared in
 `scripts/harness-install-files.txt`. It contains generic repository guidance,
-working-memory structure, an invariant-encoding pattern and skill, and
-explicit-only onboarding and improvement skills.
+optional knowledge and planning references, and explicit-only discovery,
+audit, invariant-encoding, and improvement skills. Installation does not
+activate skills or impose a task workflow.
 
 The platform bootstrap installs a checksum-verified `harness` binary under
 `scripts/bin/` and delegates installation or update to that candidate.

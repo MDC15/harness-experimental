@@ -3,10 +3,9 @@
 This directory contains current consumer-product behavior derived from real
 accepted intent. Harness deliberately ships no fake product domains.
 
-When a user provides a product specification, derive smaller living documents
-here instead of keeping one growing specification as the operating manual. Name
-files after actual product domains, such as `overview.md`, `billing.md`,
-`permissions.md`, or `api-conventions.md`.
+Retain product intent and rationale here when existing code, types, tests, and
+examples do not express them. Link to implementation knowledge instead of
+copying it into summaries; no new document is required merely to record work.
 
 ## Current Product Contract
 
@@ -15,14 +14,9 @@ The upstream `repository-harness` contract lives in the root README, current
 workflow and architecture documents, lasting decisions, implementation, and
 executable tests.
 
-## Update Rule
+## Keeping Intent Current
 
-When behavior changes:
-
-1. Update the affected product document when the expected behavior changed.
-2. Update the active execution plan when complex work uses one.
-3. Add a lasting decision only when future work must inherit a consequential
-   product, architecture, data, security, compatibility, or validation choice.
-4. Add or update executable proof that exercises the behavior.
-
-Bounded changes do not require a parallel lifecycle record.
+Keep existing explanations accurate when their product intent or rationale
+changes. Code, tests, and observable behavior supply implementation proof.
+Plans and decision records are used only when chosen by the user or consumer
+workflow; a behavior change does not itself require another document.

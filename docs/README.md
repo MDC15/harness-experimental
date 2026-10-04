@@ -4,14 +4,14 @@ Start with the smallest authoritative surface.
 
 ## Current Product
 
-- `WORKFLOW.md`: request shape, planning, judgment, operation, validation, and
-  completion.
+- `WORKFLOW.md`: repository understanding, missing capabilities, authority,
+  and evidence.
 - `ARCHITECTURE.md`: current product, code, state, update, and ownership
   boundaries.
 - `HARNESS.md`: product principles and installed-core model.
 - `product/`: current product behavior and installation contract.
 - `decisions/`: lasting choices future work must inherit.
-- `plans/`: one durable working-memory document for work that needs it.
+- `plans/`: optional locations for plans requested by the user or consumer workflow.
 - [`patterns/encoding-invariants.md`](patterns/encoding-invariants.md): turn
   accepted architecture, reliability, security, and quality rules into native
   mechanical validation.

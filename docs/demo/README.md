@@ -1,7 +1,8 @@
-# Repository-Centered Workflow Demo
+# Repository Understanding Examples
 
-This walkthrough shows how the same repository handles four different requests
-without forcing them through one lifecycle.
+These examples show how repository knowledge and evidence support different
+requests. They illustrate choices a consumer repository or user can make;
+Harness does not prescribe task categories or a planning lifecycle.
 
 Assume a small team task tracker with this product rule in
 `docs/product/tasks.md`:
@@ -54,7 +55,7 @@ Cause and effect: the scope is local and recoverable from the diff. Creating a
 durable plan or database row would add synchronization work without preserving
 information that Git and the test do not already contain.
 
-## 3. Durable Change
+## 3. Change Across Several Boundaries
 
 Request:
 
@@ -66,22 +67,22 @@ UI, and stored data.
 Step by step:
 
 1. Inspect the product, architecture, migration, and validation surfaces.
-2. Copy `docs/templates/exec-plan.md` to a descriptive file under
-   `docs/plans/active/`.
-3. Record the goal, non-goals, affected boundaries, phases, risks, rollback,
-   and proof commands.
-4. Commit the plan so another session can resume from repository state alone.
-5. Implement in reviewable groups. After each group, update progress and
-   validation evidence in the plan and commit both the work and its durable
-   memory.
-6. Record a decision under `docs/decisions/` if the time-zone model is an
-   architectural choice future work must inherit.
-7. Run end-to-end proof across the visible application boundary.
-8. Mark the plan complete and move it to `docs/plans/completed/`.
+2. Establish authority for the time-zone model and migration behavior before
+   changing externally observable policy.
+3. Identify missing capabilities for migration, application observation,
+   validation, and recovery; report anything unavailable or unproven.
+4. Follow the consumer repository's chosen workflow. If the user or repository
+   chooses a durable plan, `docs/templates/exec-plan.md` is an optional starting
+   point for goals, boundaries, risks, recovery, and proof commands.
+5. Implement in reviewable groups and run the relevant checks.
+6. Preserve accepted intent and rationale that future work cannot recover from
+   code, using the repository's chosen record location.
+7. Run end-to-end proof across the visible application boundary and report its
+   limits.
 
-Cause and effect: this change spans boundaries and may outlive one session. A
-versioned plan prevents chat history from becoming the only record of sequence,
-tradeoffs, recovery, and remaining work.
+Cause and effect: this change spans boundaries. Source references, executable
+checks, and observable recovery establish what is understood and verified.
+A versioned plan can preserve sequencing when the consumer chooses to use one.
 
 ## 4. Consequential Ambiguity
 
@@ -111,6 +112,6 @@ it.
 
 ## What Is Deliberately Absent
 
-None of these default flows requires a story row, proof matrix, trace score,
+None of these examples requires a story row, proof matrix, trace score,
 audit record, proposal, or parallel task database. Those are not part of the
 current product and do not sit between a normal request and repository work.

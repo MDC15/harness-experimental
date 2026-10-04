@@ -1,6 +1,6 @@
 ---
 name: audit-onboarding-proposal
-description: Independently audit a brownfield onboarding transcript, operational map, or exact proposed documentation patch before application. Use when a fresh reviewer must verify an $onboard-repository first pass, distinguish environment-caused Unknowns from reasoning defects, score its safety and evidence gates, or run a narrow patch-admissibility decision for specific capsule-backed hunks. This audit is read-only and must not edit files, install tools, start services, create state, or trust the producer's self-score.
+description: Use only when the user explicitly invokes `$audit-onboarding-proposal`. Independently audit an onboarding transcript and exact evidence-backed proposals. Remain read-only and verify claims against pinned repository evidence rather than trusting the producer.
 ---
 
 # Audit Onboarding Proposal

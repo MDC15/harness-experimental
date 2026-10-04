@@ -1,6 +1,6 @@
 ---
 name: onboard-repository
-description: Inspect an unfamiliar or brownfield repository, trace one real operational path, and propose evidence-backed improvements that help future agents work independently. Use when explicitly asked to onboard, map, assess, or backfill agent-facing repository guidance; use again after the user approves exact proposal items. The first pass is read-only and must not edit files, install tools, start services, create state, or infer missing product policy.
+description: Use only when the user explicitly invokes `$onboard-repository`. Inspect an unfamiliar repository, trace one operational path, identify missing capabilities, and propose evidence-backed knowledge improvements. The first pass is read-only; apply exact approved items only within the requested scope.
 ---
 
 # Onboard Repository

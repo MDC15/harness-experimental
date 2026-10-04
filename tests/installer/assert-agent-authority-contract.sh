@@ -19,41 +19,37 @@ cmp -s <(extract_block "$root/CLAUDE.md") "$claude_block"
 
 required_agent_text=(
   'Start with the requested outcome'
-  'Answers, explanations, reviews, diagnoses, plans, and status reports are'
-  'No control-plane operation is required.'
-  'docs/plans/active/'
-  'identify repository authority for each new externally'
+  'Inspection does not authorize edits or operation.'
+  'missing capabilities'
   'configurable defaults are not authority'
-  'docs/patterns/encoding-invariants.md'
-  'explicitly asked to use `$improve-harness`'
-  'product intent remains ambiguous'
-  'Harness has no task database or orchestration lifecycle.'
+  "repository's native safety and validation"
+  'Only invoke a Harness skill when the user explicitly requests it.'
+  'Consumer repositories own their task workflow and planning.'
 )
 for text in "${required_agent_text[@]}"; do
   grep -Fq "$text" "$agent_block"
 done
+! grep -Fq 'docs/plans/active/' "$agent_block"
+! grep -Fq 'docs/patterns/encoding-invariants.md' "$agent_block"
 
 [[ "$(wc -c <"$agent_block" | tr -d ' ')" -le 1600 ]]
 entry_words=$(awk '{ words += NF } END { print words }' "$agent_block" "$workflow")
 [[ "$entry_words" -le 1000 ]]
 
 required_workflow_text=(
-  'Does The Work Need Durable Memory?'
-  'Does The Work Need Human Judgment?'
-  'Add rate limiting'
-  'must stop'
-  'What Proves The Behavior?'
-  'Does The Work Encode An Invariant?'
-  'positive proof'
-  'negative proof'
-  'branch protection is externally configured or unverified'
-  'Operate The Application'
-  'Improve The Harness'
-  'No parallel lifecycle record is required.'
+  '## Authority And Scope'
+  'stop and request the smallest'
+  '## Missing Capabilities'
+  'Keep unobserved state Unknown.'
+  '## Trust Through Evidence'
+  'structural checks from semantic or runtime proof'
+  'Only invoke a Harness skill when the user explicitly requests it.'
 )
 for text in "${required_workflow_text[@]}"; do
   grep -Fq "$text" "$workflow"
 done
+! grep -Fq 'Select The Work Shape' "$workflow"
+! grep -Fq '### Bounded Change' "$workflow"
 
 [[ "$(grep -Fc '@AGENTS.md' "$claude_block")" == 1 ]]
 ! grep -Fq 'query matrix' "$claude_block"
@@ -89,26 +85,21 @@ for payload in "${payloads[@]}"; do
   grep -Fxq "$payload" "$root/scripts/harness-install-files.txt"
 done
 
-skill_metadata=(
-  .agents/skills/onboard-repository/agents/openai.yaml
-  .agents/skills/audit-onboarding-proposal/agents/openai.yaml
-  .agents/skills/improve-harness/agents/openai.yaml
-)
-for metadata in "${skill_metadata[@]}"; do
-  grep -Fq 'allow_implicit_invocation: false' "$root/$metadata"
-done
-grep -Fq 'allow_implicit_invocation: true' \
-  "$root/.agents/skills/encode-invariant/agents/openai.yaml"
+# Source/configuration contract only: host activation and agent compliance
+# require separate runtime evidence. Cover every skill declared by either profile.
+while IFS= read -r metadata; do
+  case "$metadata" in
+    .agents/skills/*/agents/openai.yaml)
+      grep -Fq 'allow_implicit_invocation: false' "$root/$metadata"
+      ! grep -Fq 'allow_implicit_invocation: true' "$root/$metadata"
+      skill="${metadata%/agents/openai.yaml}/SKILL.md"
+      grep -Fq 'Use only when the user explicitly invokes' "$root/$skill"
+      ;;
+  esac
+done < <(cat "$root/scripts/harness-install-files.txt" "$root/scripts/engineering-wisdom-install-files.txt")
 
 invariant_skill="$root/.agents/skills/encode-invariant/SKILL.md"
-for trigger in \
-  'enforce architecture, reliability, security, or quality boundaries' \
-  'prevent a documented violation from recurring' \
-  'add structural guards' \
-  'turn accepted rules into validation'; do
-  grep -Fq "$trigger" "$invariant_skill"
-done
-grep -Fq 'Do not use to infer or invent policy from conventions, code patterns, tests, defaults, or undocumented preferences.' \
+grep -Fq 'Do not infer policy from conventions, code patterns, tests, defaults, or undocumented preferences.' \
   "$invariant_skill"
 required_invariant_method=(
   "Reuse the repository's existing test, build, task, lint, scan, or validation"
@@ -142,4 +133,4 @@ grep -Fq '[switch]$RefreshAgentShim' "$root/scripts/install-harness.ps1"
 grep -Fq '$script:EngineeringWisdomPayloadManifest = "scripts/engineering-wisdom-install-files.txt"' "$root/scripts/install-harness.ps1"
 ! grep -Fq 'CliPayloadManifest' "$root/scripts/install-harness.ps1"
 
-echo "repository authority, bounded context, canonical shims, and core-only installer parity passed"
+echo "repository authority, explicit skill configuration, canonical shims, and installer parity passed"

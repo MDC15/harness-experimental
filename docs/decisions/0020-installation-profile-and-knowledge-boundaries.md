@@ -9,7 +9,7 @@ Accepted. Amended by decisions 0026 and 0027.
 ## Context
 
 Decision 0019 made the repository-centered workflow authoritative. Installation
-must make that boundary physically true: a consumer should receive generic
+must make the repository ownership boundary physically true: a consumer should receive generic
 repository guidance and the safe maintenance binary without upstream product
 history, application assumptions, or a second source of truth.
 
@@ -23,8 +23,8 @@ Harness has one product profile: **core**.
 
 Core installs:
 
-- the compact repository map and workflow;
-- generic product, plan, and decision structure;
+- the compact repository map and capability/evidence context;
+- optional product, plan, and decision locations;
 - optional templates for durable plans, decisions, runbooks, and measured
   Harness improvements;
 - explicit-only onboarding and proposal-audit skills; and

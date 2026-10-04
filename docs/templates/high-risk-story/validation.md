@@ -1,7 +1,8 @@
 # Validation
 
-> **Compatibility template.** New work records behavior-appropriate proof in
-> one execution plan unless validation has an independent long-term audience.
+> **Optional compatibility template.** Use this split packet only when the
+> consumer repository or user chooses it. `docs/templates/exec-plan.md`
+> is another optional format; Harness requires neither format.
 
 ## Proof Strategy
 

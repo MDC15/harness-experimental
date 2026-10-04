@@ -1,5 +1,5 @@
-# Active Execution Plans
+# Optional Active Plans
 
-Place one evolving plan here when work needs durable memory. Use
-`docs/templates/exec-plan.md`, keep progress and validation current, and move
-the plan to `../completed/` only after the result is verified.
+This location is available for requested plans. Harness does not require a plan
+or a transition through active/completed states. Follow the consumer's chosen
+workflow and preserve existing records.

@@ -25,7 +25,6 @@ tests/installer/test-install-harness-modes.sh
 tests/installer/test-engineering-wisdom-opt-in.sh
 tests/docs/test-doc-contracts.sh
 tests/workflow/test-repository-workflow.sh
-tests/workflow/test-task-authority.sh
 tests/maintenance/test-harness-release-classification.sh
 tests/maintenance/test-render-changelog-files.sh
 tests/release/test-harness-release-workflow-contract.sh

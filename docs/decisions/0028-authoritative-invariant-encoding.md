@@ -4,7 +4,8 @@ Date: 2026-08-11
 
 ## Status
 
-Accepted.
+Accepted; invocation and entrypoint routing amended to explicit-only by the
+current [product model](../HARNESS.md).
 
 ## Context
 
@@ -20,15 +21,13 @@ check as merge enforcement.
 
 ## Decision
 
-1. The compact agent entrypoint routes invariant work to one installed pattern.
-2. The workflow requires accepted authority first, the repository-native
+1. Core makes invariant encoding available as an optional reference and skill.
+2. Explicit invariant encoding requires accepted authority first, the repository-native
    validation owner, the smallest mechanical check, actionable diagnostics, and
    both positive and negative proof.
-3. Core installs `$encode-invariant`. Its trigger covers requests to enforce
-   boundaries, prevent recurrence, add structural guards, or convert accepted
-   rules into validation. Matching requests may invoke it implicitly; it cannot
-   infer policy from conventions, code patterns, tests, defaults, or
-   undocumented preferences.
+3. Core installs `$encode-invariant` with `allow_implicit_invocation: false`.
+   Only explicit user invocation activates it. It cannot infer policy from
+   conventions, code patterns, tests, defaults, or undocumented preferences.
 4. `$onboard-repository` compares accepted invariants with executable checks in
    its read-only proposal pass. It reports unenforced rules and checks lacking
    authority without editing, executing, enabling, or removing guards.

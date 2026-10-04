@@ -1,27 +1,9 @@
-# Execution Plans
+# Optional Execution Plans
 
-Plans are Git-native working memory for complex tasks.
+Use this location when the user requests a repository plan or the consumer's
+own workflow calls for one. Harness does not require planning or choose a task
+lifecycle. Existing plans retain their original intent and evidence.
 
-Use an ephemeral plan for bounded, single-session work. Create one file under
-`active/` when work spans sessions, coordinates contributors, has meaningful
-dependencies, needs recovery, or cannot safely resume from its diff.
-
-```text
-docs/plans/active/<slug>.md
-  -> keep progress, decisions, recovery, and validation current
-  -> record the verified result
-  -> move to docs/plans/completed/<slug>.md
-```
-
-Use `docs/templates/exec-plan.md`. Do not split one task into story, design,
-trace, and validation records without an independent audience.
-
-## Active
-
-No durable work is currently active.
-
-## History
-
-Completed plans may be removed from the current tree when decisions, code,
-tests, and Git history preserve their lasting result. This keeps current
-retrieval focused without deleting provenance.
+`docs/templates/exec-plan.md` is an optional starting point. `active/` and
+`completed/` are available locations; code, tests, decisions, and Git history
+remain the owners of lasting implementation knowledge.

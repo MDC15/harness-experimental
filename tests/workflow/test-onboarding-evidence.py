@@ -244,6 +244,61 @@ class OnboardingEvidenceTests(unittest.TestCase):
         self.assertIn("v1 claims must be a non-empty array", self.validate(
             message, expected=1).stderr)
 
+    def assert_explicit_skill_policy(self, metadata, skill):
+        self.assertEqual(metadata.count("allow_implicit_invocation:"), 1,
+                         "skill must declare exactly one invocation policy")
+        self.assertIn("allow_implicit_invocation: false", metadata,
+                      "skill must require explicit user invocation")
+        description = next((line for line in skill.splitlines()
+                            if line.startswith("description: ")), "")
+        self.assertTrue(description.startswith(
+            "description: Use only when the user explicitly invokes"),
+                        "skill description must require explicit invocation")
+
+    def test_installed_core_skills_require_explicit_invocation(self):
+        skills = self.root / ".agents/skills"
+        self.assertEqual({path.name for path in skills.iterdir()}, {
+            "onboard-repository", "audit-onboarding-proposal", "improve-harness",
+            "encode-invariant",
+        })
+        for skill in skills.iterdir():
+            with self.subTest(skill=skill.name):
+                self.assert_explicit_skill_policy(
+                    (skill / "agents/openai.yaml").read_text(),
+                    (skill / "SKILL.md").read_text(),
+                )
+
+    def test_implicit_invocation_policy_is_rejected(self):
+        metadata = "policy:\n  allow_implicit_invocation: true\n"
+        skill = "Use only when the user explicitly invokes `$example`."
+        with self.assertRaisesRegex(AssertionError, "require explicit user invocation"):
+            self.assert_explicit_skill_policy(metadata, skill)
+
+    def test_body_instruction_does_not_replace_explicit_description(self):
+        metadata = "policy:\n  allow_implicit_invocation: false\n"
+        skill = ("---\ndescription: Use when reviewing code.\n---\n"
+                 "Use only when the user explicitly invokes `$example`.")
+        with self.assertRaisesRegex(AssertionError, "description must require"):
+            self.assert_explicit_skill_policy(metadata, skill)
+
+    def test_installed_context_has_no_forced_task_routing(self):
+        context = "\n".join((self.root / path).read_text() for path in (
+            "AGENTS.md", "docs/WORKFLOW.md", "docs/plans/README.md",
+            "docs/plans/active/README.md",
+        ))
+        for removed in (
+            "Select The Work Shape", "### Bounded Change", "Use an ephemeral plan",
+            "Create one durable plan when", "Use one `docs/plans/active/`",
+            "The plan is the primary task artifact",
+        ):
+            with self.subTest(removed=removed):
+                self.assertTrue(removed not in context, f"context must not force: {removed}")
+        self.assertIn("missing capabilities", context)
+        self.assertIn("Only invoke a Harness skill when the user explicitly requests it", context)
+        self.assertEqual({path.name for path in (self.root / "docs/plans/active").iterdir()},
+                         {"README.md"})
+        self.assertFalse((self.root / "harness.db").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

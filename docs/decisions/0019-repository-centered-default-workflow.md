@@ -4,7 +4,11 @@ Date: 2026-07-21
 
 ## Status
 
-Accepted and active.
+Repository authority and evidence principles retained. The task-classification
+and mandatory-planning provisions below are historical and superseded by the
+current [product model](../HARNESS.md) and [repository context](../WORKFLOW.md).
+The owner now delegates workflow and planning to the consumer; all Harness
+skills require explicit invocation.
 
 ## Context
 

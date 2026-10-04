@@ -3,13 +3,15 @@
 Decision records preserve lasting product, architecture, compatibility,
 security, data-ownership, and validation choices.
 
-Use `docs/templates/decision.md`. Task-local choices stay in the active plan.
+Decision records are optional locations chosen by the user or consumer workflow.
+Existing accepted decisions retain their authority; `docs/templates/decision.md`
+is an available reference, not a required task step.
 
 ## Current Upstream Decisions
 
 | Decision | Title |
 | --- | --- |
-| 0019 | Repository-Centered Default Workflow |
+| 0019 | Repository Authority (workflow provisions historical) |
 | 0020 | Installation Profiles And Knowledge Boundaries |
 | 0024 | Rust Harness Core Maintenance CLI |
 | 0025 | Latest-Release Self-Update And Human-Directed Conflicts |
@@ -27,10 +29,8 @@ decisions remain available through Git history. They are absent from the
 current index so agents do not confuse historical authority with current
 product behavior.
 
-## Add A Decision When
+## Retaining Rationale
 
-- a lasting product or architecture choice changes;
-- public compatibility or data ownership changes;
-- security or recovery policy changes;
-- validation is materially added, removed, or weakened; or
-- the source-of-truth hierarchy changes.
+Preserve accepted intent and consequential rationale that code and tests cannot
+express. Link to implementation knowledge rather than duplicating it. The
+consumer owns when to create or retain a record.

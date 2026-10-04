@@ -192,7 +192,9 @@ mod tests {
             .find(|file| file.path.as_str() == "AGENTS.md")
             .unwrap();
         let agents = String::from_utf8(agents.content.clone()).unwrap();
-        assert!(agents.contains("No control-plane operation is required."));
+        assert!(
+            agents.contains("Only invoke a Harness skill when the user explicitly requests it.")
+        );
         assert!(!agents.contains("Current Upstream Goal"));
         let plans = distribution
             .files
@@ -218,6 +220,7 @@ mod tests {
             ".agents/skills/onboard-repository/agents/openai.yaml",
             ".agents/skills/audit-onboarding-proposal/agents/openai.yaml",
             ".agents/skills/improve-harness/agents/openai.yaml",
+            ".agents/skills/encode-invariant/agents/openai.yaml",
         ] {
             let metadata = distribution
                 .files
@@ -227,12 +230,5 @@ mod tests {
             assert!(String::from_utf8_lossy(&metadata.content)
                 .contains("allow_implicit_invocation: false"));
         }
-        let invariant_metadata = distribution
-            .files
-            .iter()
-            .find(|file| file.path.as_str() == ".agents/skills/encode-invariant/agents/openai.yaml")
-            .unwrap();
-        assert!(String::from_utf8_lossy(&invariant_metadata.content)
-            .contains("allow_implicit_invocation: true"));
     }
 }

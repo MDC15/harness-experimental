@@ -1,6 +1,6 @@
 ---
 name: engineering-wisdom
-description: Provide an explicitly requested, repository-grounded engineering review using contextual heuristics for code clarity, SOLID and design, testing, refactoring, architecture, and professional practice. Use only when the user invokes `$engineering-wisdom` or explicitly asks for this installed engineering-wisdom pack; do not turn its advice into repository policy or automatically rewrite an application architecture.
+description: Use only when the user explicitly invokes `$engineering-wisdom`. Provide repository-grounded engineering advice using contextual heuristics. Advice does not establish repository policy or authorize an architecture rewrite.
 ---
 
 # Engineering Wisdom

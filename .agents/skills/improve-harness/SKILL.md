@@ -1,6 +1,6 @@
 ---
 name: improve-harness
-description: Run one explicitly authorized, evidence-backed improvement to a repository's agent guidance, tools, runbooks, or validation. Use only when the user invokes `$improve-harness` or explicitly asks to improve the Harness after observed reusable agent friction. Do not use for ordinary product changes, speculative cleanup, one unexplained agent mistake, or automatic post-task reflection.
+description: Use only when the user explicitly invokes `$improve-harness`. Test one authorized improvement to repository guidance or capabilities against an observed baseline and a fresh rerun. Do not infer permission from ordinary work or automatically reflect after tasks.
 ---
 
 # Improve Harness

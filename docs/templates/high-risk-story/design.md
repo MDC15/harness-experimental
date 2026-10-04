@@ -1,8 +1,8 @@
 # Design
 
-> **Compatibility template.** New complex or sensitive work uses one execution
-> plan by default. Retain this split packet only for an explicit orchestration
-> contract.
+> **Optional compatibility template.** Use this split packet only when the
+> consumer repository or user chooses it. `docs/templates/exec-plan.md`
+> is another optional format; Harness requires neither format.
 
 ## Domain Model
 

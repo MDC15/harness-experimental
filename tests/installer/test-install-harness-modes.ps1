@@ -40,11 +40,11 @@ try {
     if (!(Test-Path (Join-Path $Fresh "docs/patterns/encoding-invariants.md"))) { throw "invariant pattern missing" }
     if (!(Test-Path (Join-Path $Fresh ".agents/skills/encode-invariant/SKILL.md"))) { throw "encode-invariant skill missing" }
     $FreshAgents = Get-Content -Raw (Join-Path $Fresh "AGENTS.md")
-    if (!$FreshAgents.Contains("docs/patterns/encoding-invariants.md")) { throw "invariant routing missing" }
+    if (!$FreshAgents.Contains("Only invoke a Harness skill when the user explicitly requests it.")) { throw "explicit skill policy missing" }
     $FreshWorkflow = Get-Content -Raw (Join-Path $Fresh "docs/WORKFLOW.md")
-    if (!$FreshWorkflow.Contains("Does The Work Encode An Invariant?")) { throw "invariant workflow missing" }
+    if (!$FreshWorkflow.Contains("## Missing Capabilities")) { throw "capability context missing" }
     $FreshInvariantSkill = Get-Content -Raw (Join-Path $Fresh ".agents/skills/encode-invariant/SKILL.md")
-    if (!$FreshInvariantSkill.Contains("prevent a documented violation from recurring")) { throw "invariant skill trigger missing" }
+    if (!$FreshInvariantSkill.Contains("Use only when the user explicitly invokes")) { throw "explicit skill description missing" }
     foreach ($RequiredInvariantText in @(
         "Reuse the repository's existing test, build, task, lint, scan, or validation",
         "Choose the lowest deterministic layer that sees the complete accepted",
@@ -57,7 +57,7 @@ try {
         if (!$FreshInvariantSkill.Contains($RequiredInvariantText)) { throw "invariant method missing: $RequiredInvariantText" }
     }
     $FreshInvariantMetadata = Get-Content -Raw (Join-Path $Fresh ".agents/skills/encode-invariant/agents/openai.yaml")
-    if (!$FreshInvariantMetadata.Contains("allow_implicit_invocation: true")) { throw "invariant skill is not request-triggered" }
+    if (!$FreshInvariantMetadata.Contains("allow_implicit_invocation: false")) { throw "invariant skill is not explicit-only" }
     $FreshOnboarding = Get-Content -Raw (Join-Path $Fresh ".agents/skills/onboard-repository/SKILL.md")
     if (!$FreshOnboarding.Contains("Compare documented invariants with executable checks")) { throw "onboarding invariant comparison missing" }
     $Gitignore = Get-Content -Raw (Join-Path $Fresh ".gitignore")
@@ -141,7 +141,7 @@ try {
     $ShimHash = (Get-FileHash -Algorithm SHA256 (Join-Path $Shim "AGENTS.md")).Hash
     Invoke-Install $Shim @("Merge", "RefreshAgentShim")
     $ShimText = Get-Content -Raw (Join-Path $Shim "AGENTS.md")
-    if (!$ShimText.Contains("local rule") -or $ShimText.Contains("stale") -or !$ShimText.Contains("No control-plane operation is required.")) { throw "shim refresh failed" }
+    if (!$ShimText.Contains("local rule") -or $ShimText.Contains("stale") -or !$ShimText.Contains("Only invoke a Harness skill when the user explicitly requests it.")) { throw "shim refresh failed" }
     $ShimBackup = Get-ChildItem (Join-Path $Shim ".harness-backup") -Recurse -Filter "AGENTS.md" -File | Select-Object -First 1
     if (!$ShimBackup -or (Get-FileHash -Algorithm SHA256 $ShimBackup.FullName).Hash -ne $ShimHash) { throw "shim backup does not match prior AGENTS.md" }
 
